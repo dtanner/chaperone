@@ -1,0 +1,10 @@
+
+[[outputs]]
+type="stdout"
+
+[[outputs]]
+type="influxdb"
+tags={app="foo", env="dev"}
+
+
+

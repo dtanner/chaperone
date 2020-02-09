@@ -1,0 +1,5 @@
+name = "should timeout"
+description = "should timeout"
+command = "sleep 2"
+interval = "10s"
+timeout = "1s"
