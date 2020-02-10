@@ -1,0 +1,10 @@
+
+[[outputs]]
+type="stdout"
+
+[[outputs]]
+type="influxdb"
+db="test"
+defaultTags={app="foo", env="dev"}
+uri="http://localhost:8086"
+

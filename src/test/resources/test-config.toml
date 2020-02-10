@@ -8,3 +8,10 @@ db="test"
 defaultTags={app="foo", env="dev"}
 uri="http://localhost:8086"
 
+# would the below be better??
+#[outputs.stdout]
+#
+#[outputs.influxdb]
+#db="test"
+#defaultTags={app="foo", env="dev"}
+#uri="http://localhost:8086"

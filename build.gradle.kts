@@ -31,6 +31,13 @@ dependencies {
     // config
     implementation("com.uchuhimo:konf:0.22.1")
 
+    val jacksonVersion = "2.10.1"
+    api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
+    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    api("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion")
+
     testImplementation("io.kotlintest:kotlintest-core:3.4.2")
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
     testImplementation("io.kotlintest:kotlintest-assertions:3.4.2")
