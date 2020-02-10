@@ -1,6 +1,10 @@
 package chaperone
 
+import com.uchuhimo.konf.Config
+import com.uchuhimo.konf.source.toml
+import com.uchuhimo.konf.toValue
 import mu.KotlinLogging
+import java.io.File
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
@@ -14,7 +18,8 @@ data class Check(
     val timeout: Duration
 ) {
     fun execute(): CheckResult {
-        log.debug { "$name: Executing $command" }
+        log.info { "$name: Executing $command" }
+//        log.debug { "$name: Executing $command" }
         return try {
             val bashCommand = arrayOf("/bin/bash", "-c", command)
             val proc = Runtime.getRuntime().exec(bashCommand)
@@ -42,3 +47,17 @@ data class CheckResult(
     val output: String? = null
 )
 
+fun loadChecks(checksDirectory: File): List<Check> {
+    check(checksDirectory.isDirectory)
+    val checksFiles = checksDirectory.listFiles()
+    if (checksFiles == null || checksFiles.isEmpty()) {
+        throw IllegalStateException("checks directory is empty: ${checksDirectory.name}")
+    }
+
+    return checksFiles.map { checksFile ->
+        Config()
+            .from.toml.file(checksFile)
+            .toValue<Check>()
+    }
+
+}

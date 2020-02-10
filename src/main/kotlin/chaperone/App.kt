@@ -21,6 +21,7 @@ class App : CliktCommand() {
 
         runBlocking {
             checks.forEach { check ->
+                // todo - make this asyncronous
                 launch {
                     while (true) {
                         val result = check.execute()
