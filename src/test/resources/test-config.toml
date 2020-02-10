@@ -1,10 +1,12 @@
+foo="bar"
+blah=2
 
 [[outputs]]
 type="stdout"
 
 [[outputs]]
 type="influxdb"
-tags={app="foo", env="dev"}
-
-
+db="test"
+default_tags={app="foo", env="dev"}
+uri="http://localhost:8086"
 

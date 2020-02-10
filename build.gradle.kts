@@ -23,6 +23,7 @@ dependencies {
     implementation("ch.qos.logback:logback-core:1.2.3")
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("io.github.microutils:kotlin-logging:1.7.6")
+    implementation("io.micrometer:micrometer-registry-influx:latest.release")
 
     // cli parsing
     implementation("com.github.ajalt:clikt:2.4.0")

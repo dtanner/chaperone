@@ -1,7 +1,6 @@
 package chaperone
 
 import mu.KotlinLogging
-import java.io.IOException
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
@@ -16,26 +15,16 @@ data class Check(
 ) {
     fun execute(): CheckResult {
         log.debug { "$name: Executing $command" }
-//        val argsList = mutableListOf(command)
-//        if (args != null) {
-//            argsList.addAll(args.map { " $it" })
-//        }
         return try {
-            val proc = Runtime.getRuntime().exec(command)
-
-//            val proc = ProcessBuilder(argsList)
-//                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-//                .redirectError(ProcessBuilder.Redirect.PIPE)
-//                .start()
-
+            val bashCommand = arrayOf("/bin/bash", "-c", command)
+            val proc = Runtime.getRuntime().exec(bashCommand)
             proc.waitFor(timeout.seconds, TimeUnit.SECONDS)
             CheckResult(status = CheckStatus.fromExitCode(proc.exitValue()), output = proc.inputStream.bufferedReader().readText())
         } catch (e: Exception) {
-            log.info(e) { "Exception caught executing command: $this" }
+            log.error(e) { "Exception caught executing command: $this" }
             CheckResult(status = CheckStatus.FAIL)
         }
     }
-
 }
 
 enum class CheckStatus {
@@ -53,11 +42,3 @@ data class CheckResult(
     val output: String? = null
 )
 
-interface OutputWriter {
-    fun write(check: Check, checkResult: CheckResult)
-}
-
-sealed class OutputWriterConfig {
-    object StdOut : OutputWriterConfig()
-    data class InfluxDb(val uri: String, val tags: Map<String, String>) : OutputWriterConfig()
-}
