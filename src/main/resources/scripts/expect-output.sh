@@ -3,7 +3,7 @@
 set -eEuo pipefail
 
 function error() {
-  >&2 echo "$@"
+  echo >&2 "$@"
 }
 
 function usage() {
@@ -12,8 +12,8 @@ function usage() {
 }
 
 if [[ $# -ne 1 ]]; then
-    usage
-    exit 2
+  usage
+  exit 2
 fi
 
 expected_output=$1

@@ -15,7 +15,7 @@ class ConfigLoaderTest {
         config.outputs.shouldContain(
             OutputConfig(
                 type = "influxdb",
-                default_tags = mapOf("app" to "foo", "env" to "dev"),
+                defaultTags = mapOf("app" to "foo", "env" to "dev"),
                 db = "test",
                 uri = "http://localhost:8086"
             )

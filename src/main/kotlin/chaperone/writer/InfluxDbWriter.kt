@@ -35,8 +35,8 @@ class InfluxDbWriter : OutputWriter {
         }
 
         meterRegistry = InfluxMeterRegistry(influxConfig, Clock.SYSTEM)
-        if (outputConfig.default_tags != null) {
-            meterRegistry.config().commonTags(outputConfig.default_tags.map {
+        if (outputConfig.defaultTags != null) {
+            meterRegistry.config().commonTags(outputConfig.defaultTags.map {
                 Tag.of(it.key, it.value)
             }.toMutableList())
         }

@@ -14,11 +14,16 @@ data class OutputConfig(
     val type: String,
 
     // influx
-    // todo normalize the naming of cased words
-    val default_tags: Map<String, String>? = null,
+    val defaultTags: Map<String, String>? = null,
     val db: String? = null,
     val uri: String? = null
 )
+
+// unused...see if this is useful for validating and getting a focused output config
+sealed class OutputWriterConfig {
+    object StdOut : OutputWriterConfig()
+    data class InfluxDb(val uri: String, val tags: Map<String, String>) : OutputWriterConfig()
+}
 
 //enum class OutputConfigType(outputWriterImplementation: Class<out OutputWriter>) {
 //    stdout(StdOutWriter::class.java),
@@ -34,6 +39,5 @@ data class OutputConfig(
 fun loadConfig(configFile: File): AppConfig {
     return Config()
         .from.toml.file(configFile)
-        .from.json.file(configFile)
         .toValue()
 }
