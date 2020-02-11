@@ -17,7 +17,7 @@ class ConfigLoaderTest {
         val influxConfig = config.outputs.influxdb
         influxConfig.shouldNotBeNull()
         influxConfig.db.shouldBe("test")
-        influxConfig.defaultTags.shouldBe(mapOf("app" to "foo", "env" to "dev"))
+        influxConfig.defaultTags.shouldBe(mapOf("app" to "foo"))
         influxConfig.uri.shouldBe("http://localhost:8086")
     }
 }

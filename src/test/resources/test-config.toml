@@ -3,5 +3,5 @@
 
 [outputs.influxdb]
 db="test"
-defaultTags={app="foo", env="dev"}
+defaultTags={app="foo"}
 uri="http://localhost:8086"

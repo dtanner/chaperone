@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Utility script used to evaluate piped input with expectations. The exit code indicates success or failure.
+# e.g. The following command would result in an exit code of 0:
+# echo -n "foo" | expect-output.sh foo
+# whereas the following command would result in an exit code of 1:
+# echo -n "foo" | expect-output.sh bar
+
 set -eEuo pipefail
 
 function error() {

@@ -1,6 +1,5 @@
 package chaperone
 
-import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -12,13 +11,14 @@ class ChecksLoaderTest {
         val checksDir = File(javaClass.getResource("/test-checks.d").toURI())
         val checks = loadChecks(checksDir)
         checks.size.shouldBe(1)
-        checks.shouldContain(
+        checks.first().shouldBe(
             Check(
-                name = "sample",
-                description = "sample check",
+                name = "sample-dev",
+                description = "sample dev check",
                 command = "true",
-                interval = Duration.ofMinutes(1),
-                timeout = Duration.ofSeconds(30)
+                interval = Duration.ofSeconds(10),
+                timeout = Duration.ofSeconds(30),
+                tags = mapOf("env" to "dev")
             )
         )
     }

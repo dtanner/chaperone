@@ -15,7 +15,8 @@ data class Check(
     val description: String,
     val command: String,
     val interval: Duration,
-    val timeout: Duration
+    val timeout: Duration,
+    val tags: Map<String, String> = mapOf()
 ) {
     fun execute(): CheckResult {
         log.debug { "$name: Executing $command" }

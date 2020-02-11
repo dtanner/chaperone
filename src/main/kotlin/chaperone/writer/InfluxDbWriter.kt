@@ -28,9 +28,7 @@ class InfluxDbWriter(config: InfluxDbOutputConfig) : OutputWriter {
 
         meterRegistry = InfluxMeterRegistry(influxConfig, Clock.SYSTEM)
         if (config.defaultTags != null) {
-            meterRegistry.config().commonTags(config.defaultTags.map {
-                Tag.of(it.key, it.value)
-            }.toMutableList())
+            meterRegistry.config().commonTags(config.defaultTags.toTagList())
         }
     }
 
@@ -44,9 +42,12 @@ class InfluxDbWriter(config: InfluxDbOutputConfig) : OutputWriter {
         // this also allows us to alert on no data, since rows with 0 for values is different than no data.
 
         val value = if (checkResult.status == CheckStatus.OK) 0L else 1L
-        meterRegistry.timer(
-            "check.status.code",
-            listOf(Tag.of("check", check.name))
-        ).record(value, TimeUnit.MILLISECONDS)
+        val tags = check.tags.toTagList()
+        tags.add(Tag.of("check", check.name))
+        meterRegistry.timer("check.status.code", tags).record(value, TimeUnit.MILLISECONDS)
     }
+}
+
+fun Map<String, String>.toTagList(): MutableList<Tag> {
+    return this.map { Tag.of(it.key, it.value) }.toMutableList()
 }

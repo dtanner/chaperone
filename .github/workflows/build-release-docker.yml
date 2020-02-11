@@ -18,33 +18,8 @@ env:
   IMAGE_NAME: edgescope/chaperone
 
 jobs:
-  # Run tests.
-  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-#  test:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Set up JDK
-#        uses: actions/setup-java@v1
-#        with:
-#          java-version: 1.11
-#      - name: Run unit tests
-#        run: ./gradlew clean check
-#
-#      - name: Run docker tests or build container
-#        run: |
-#          if [ -f docker-compose.test.yml ]; then
-#            docker-compose --file docker-compose.test.yml build
-#            docker-compose --file docker-compose.test.yml run sut
-#          else
-#            docker build . --file Dockerfile
-#          fi
-
-  # Push image to GitHub Package Registry.
-  # See also https://docs.docker.com/docker-hub/builds/
-  push:
-#    needs: test
+  # Build and Push image to Docker Hub
+  build-and-deploy:
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push'

@@ -1,6 +1,7 @@
 # sample check - this will simply execute the bash `true` and return success, running every 1 minute
-name = "sample"
-description = "sample check"
+name = "sample-dev"
+description = "sample dev check"
 command = "echo -n 'foo' | expect-output.sh foo"
 interval = "1m"
 timeout = "5s"
+tags = {env="dev"}
