@@ -30,4 +30,3 @@ ADD sample-config /chaperone
 ENTRYPOINT [ "dumb-init", "--" ]
 WORKDIR /opt/chaperone
 CMD ["bin/chaperone"]
-
