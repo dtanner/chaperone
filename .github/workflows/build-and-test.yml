@@ -19,4 +19,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: build and test
-      run: gw clean check
+      run: gradlew clean check
