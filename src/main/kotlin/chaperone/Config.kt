@@ -26,6 +26,8 @@ class InfluxDbOutputConfig(
 
 
 fun loadConfig(configFile: File): AppConfig {
+    check(configFile.exists()) { "Error: configured configFile wasn't found. [${configFile.path}]" }
+
     return Config()
         .from.toml.file(configFile)
         .toValue()

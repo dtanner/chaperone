@@ -1,0 +1,5 @@
+name = "sample"
+description = "sample check"
+command = "true"
+interval = "1m"
+timeout = "30s"

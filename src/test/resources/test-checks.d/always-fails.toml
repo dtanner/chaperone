@@ -1,5 +1,0 @@
-name = "always fails"
-description = "should always fail"
-command = "false"
-interval = "10s"
-timeout = "30s"

@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter
 private val log = KotlinLogging.logger {}
 
 class StdOutWriter : OutputWriter {
-    override val typeName: String = "stdout"
 
     override fun write(check: Check, checkResult: CheckResult) {
         val formattedString =

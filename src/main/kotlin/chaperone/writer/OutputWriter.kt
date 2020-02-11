@@ -6,7 +6,6 @@ import chaperone.CheckResult
 import chaperone.InfluxDbOutputConfig
 
 interface OutputWriter {
-    val typeName: String
     fun write(check: Check, checkResult: CheckResult)
 }
 
@@ -24,8 +23,7 @@ fun initializeConfiguredOutputWriters(appConfig: AppConfig): List<OutputWriter> 
     }
 
     appConfig.outputs.influxdb?.let { config: InfluxDbOutputConfig ->
-        val writer = InfluxDbWriter()
-        writer.initialize(config)
+        val writer = InfluxDbWriter(config)
         outputWriters.add(writer)
     }
 

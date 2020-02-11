@@ -11,11 +11,11 @@ class ChecksLoaderTest {
     fun `load toml checks`() {
         val checksDir = File(javaClass.getResource("/test-checks.d").toURI())
         val checks = loadChecks(checksDir)
-        checks.size.shouldBe(3)
+        checks.size.shouldBe(1)
         checks.shouldContain(
             Check(
-                name = "always succeeds",
-                description = "should always be ok",
+                name = "sample",
+                description = "sample check",
                 command = "true",
                 interval = Duration.ofMinutes(1),
                 timeout = Duration.ofSeconds(30)

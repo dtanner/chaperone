@@ -1,5 +1,0 @@
-name = "always succeeds"
-description = "should always be ok"
-command = "true"
-interval = "1m"
-timeout = "30s"

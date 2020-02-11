@@ -47,7 +47,7 @@ data class CheckResult(
 )
 
 fun loadChecks(checksDirectory: File): List<Check> {
-    check(checksDirectory.isDirectory)
+    check(checksDirectory.isDirectory) { "Error: configured checksDirectory wasn't found. [${checksDirectory.path}]" }
     val checksFiles = checksDirectory.listFiles()
     if (checksFiles == null || checksFiles.isEmpty()) {
         throw IllegalStateException("checks directory is empty: ${checksDirectory.name}")

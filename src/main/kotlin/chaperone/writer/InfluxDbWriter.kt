@@ -11,16 +11,11 @@ import io.micrometer.influx.InfluxConfig
 import io.micrometer.influx.InfluxMeterRegistry
 import java.util.concurrent.TimeUnit
 
-// influx config docs: https://micrometer.io/docs/registry/influx
+class InfluxDbWriter(config: InfluxDbOutputConfig) : OutputWriter {
 
-class InfluxDbWriter : OutputWriter {
+    private val meterRegistry: MeterRegistry
 
-    private lateinit var meterRegistry: MeterRegistry
-
-    override val typeName: String = "influxdb"
-
-    fun initialize(config: InfluxDbOutputConfig) {
-
+    init {
         val influxConfig: InfluxConfig = object : InfluxConfig {
             override fun get(k: String): String? = null
 
@@ -44,7 +39,7 @@ class InfluxDbWriter : OutputWriter {
         // the retrieved value to be a discrete value of e.g. 0 for success, 1 for fail, etc.
         // https://grafana.com/grafana/plugins/flant-statusmap-panel
 
-        // record a `0` for OK, and `1` for FAIL. then use the influx query to find failures is using the max(upper) column.
+        // record a `0` for OK, and `1` for FAIL. then use query to find failures using the max(upper) column.
         // sample query: SELECT max("upper") FROM "check_status_code" WHERE ("app" = 'foo') AND $timeFilter GROUP BY time($__interval), "check" fill(null)
         // this also allows us to alert on no data, since rows with 0 for values is different than no data.
 
