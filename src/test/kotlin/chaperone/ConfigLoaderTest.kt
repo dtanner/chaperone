@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import java.io.File
 
 class ConfigLoaderTest {
+
     @Test
     fun `load toml config`() {
         val tomlSampleFile = File(javaClass.getResource("/test-config.toml").toURI())
