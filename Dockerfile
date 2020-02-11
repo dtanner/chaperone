@@ -21,7 +21,7 @@ RUN apk add --no-cache coreutils bash curl jq dumb-init
 COPY --from=builder /home/gradle/src/build/install/chaperone/ /opt/chaperone/
 
 # add scripts we want globally available to the path
-ADD scripts /usr/local/bin/
+ADD global-scripts /usr/local/bin/
 
 # add the sample config and checks directory to the default location as an example when running this docker image directly.
 # the expectation is that usages will overwrite the /chaperone direectory with their real config and checks
