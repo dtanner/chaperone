@@ -1,0 +1,22 @@
+name: build-and-test
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: build and test
+      run: gw clean check
