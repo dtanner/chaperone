@@ -18,8 +18,7 @@ data class Check(
     val timeout: Duration
 ) {
     fun execute(): CheckResult {
-        log.info { "$name: Executing $command" }
-//        log.debug { "$name: Executing $command" }
+        log.debug { "$name: Executing $command" }
         return try {
             val bashCommand = arrayOf("/bin/bash", "-c", command)
             val proc = Runtime.getRuntime().exec(bashCommand)

@@ -4,6 +4,7 @@ import chaperone.writer.initializeConfiguredOutputWriters
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -20,17 +21,20 @@ class App : CliktCommand() {
         val outputWriters = initializeConfiguredOutputWriters(config)
 
         runBlocking {
-            checks.forEach { check ->
-                // todo - make this asyncronous
-                launch {
-                    while (true) {
-                        val result = check.execute()
-                        outputWriters.forEach { it.write(check, result) }
-                        delay(check.interval.toMillis())
+            val job = GlobalScope.launch {
+                checks.forEach { check ->
+                    launch {
+                        while (true) {
+                            val result = check.execute()
+                            outputWriters.forEach { it.write(check, result) }
+                            delay(check.interval.toMillis())
+                        }
                     }
                 }
             }
+            job.join()
         }
+
     }
 }
 
