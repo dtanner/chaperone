@@ -15,7 +15,7 @@ RUN gradle check installDist
 
 
 # this builds the runtime container that includes the compiled code
-FROM adoptopenjdk/openjdk11:alpine
+FROM adoptopenjdk/openjdk11:alpine-slim
 RUN apk add --no-cache coreutils bash curl jq dumb-init
 
 COPY --from=builder /home/gradle/src/build/install/chaperone/ /opt/chaperone/
