@@ -17,7 +17,7 @@ RUN gradle check installDist
 # this builds the runtime container that includes the compiled code
 FROM adoptopenjdk/openjdk11:debian-slim
 
-RUN apt-get install -y coreutils bash curl jq dumb-init
+RUN apt-get update && apt-get install -y coreutils bash curl jq dumb-init
 
 COPY --from=builder /home/gradle/src/build/install/chaperone/ /opt/chaperone/
 
