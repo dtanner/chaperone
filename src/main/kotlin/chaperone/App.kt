@@ -16,7 +16,8 @@ class App : CliktCommand() {
     private val configFile: String by option(help = "configuration file").default("/chaperone/config.toml")
 
     override fun run() {
-        val checks = loadChecks(File(checksDir))
+        val checksDirFile = File(checksDir)
+        val checks = loadChecks(checksDirFile)
         val config = loadConfig(File(configFile))
         val outputWriters = initializeConfiguredOutputWriters(config)
 
@@ -25,7 +26,7 @@ class App : CliktCommand() {
                 checks.forEach { check ->
                     launch {
                         while (true) {
-                            val result = check.execute()
+                            val result = check.execute(checksDirFile)
                             outputWriters.forEach { it.write(check, result) }
                             delay(check.interval.toMillis())
                         }

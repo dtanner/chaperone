@@ -18,11 +18,11 @@ data class Check(
     val timeout: Duration,
     val tags: Map<String, String> = mapOf()
 ) {
-    fun execute(): CheckResult {
+    fun execute(workingDirectory: File): CheckResult {
         log.debug { "$name: Executing $command" }
         return try {
             val bashCommand = arrayOf("/bin/bash", "-c", command)
-            val proc = Runtime.getRuntime().exec(bashCommand)
+            val proc = Runtime.getRuntime().exec(bashCommand, null, workingDirectory)
             proc.waitFor(timeout.seconds, TimeUnit.SECONDS)
             CheckResult(status = CheckStatus.fromExitCode(proc.exitValue()), output = proc.inputStream.bufferedReader().readText())
         } catch (e: Exception) {

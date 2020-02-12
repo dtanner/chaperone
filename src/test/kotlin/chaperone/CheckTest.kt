@@ -5,6 +5,7 @@ import io.kotlintest.matchers.string.shouldNotBeBlank
 import io.kotlintest.matchers.types.shouldBeNull
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.Test
+import java.io.File
 import java.time.Duration
 
 class CheckTest {
@@ -18,7 +19,7 @@ class CheckTest {
             timeout = Duration.ofSeconds(30)
         )
 
-        val result = check.execute()
+        val result = check.execute(File("."))
         result.status.shouldBe(CheckStatus.OK)
         result.output.shouldBeBlank()
     }
@@ -33,7 +34,7 @@ class CheckTest {
             timeout = Duration.ofSeconds(30)
         )
 
-        val result = check.execute()
+        val result = check.execute(File("."))
         result.status.shouldBe(CheckStatus.OK)
         result.output.shouldNotBeBlank()
     }
@@ -48,7 +49,7 @@ class CheckTest {
             timeout = Duration.ofSeconds(30)
         )
 
-        val result = check.execute()
+        val result = check.execute(File("."))
         result.status.shouldBe(CheckStatus.FAIL)
         result.output.shouldBeBlank()
     }
@@ -63,7 +64,7 @@ class CheckTest {
             timeout = Duration.ofSeconds(1)
         )
 
-        val result = check.execute()
+        val result = check.execute(File("."))
         result.status.shouldBe(CheckStatus.FAIL)
         result.output.shouldBeNull()
     }
