@@ -9,7 +9,10 @@ import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Tag
 import io.micrometer.influx.InfluxConfig
 import io.micrometer.influx.InfluxMeterRegistry
+import mu.KotlinLogging
 import java.util.concurrent.TimeUnit
+
+private val log = KotlinLogging.logger {}
 
 class InfluxDbWriter(config: InfluxDbOutputConfig) : OutputWriter {
 
@@ -25,6 +28,8 @@ class InfluxDbWriter(config: InfluxDbOutputConfig) : OutputWriter {
 
             override fun uri(): String = config.uri
         }
+
+        log.info { "influxdb config: $config" }
 
         meterRegistry = InfluxMeterRegistry(influxConfig, Clock.SYSTEM)
         if (config.defaultTags != null) {

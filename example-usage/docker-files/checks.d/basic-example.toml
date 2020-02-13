@@ -1,0 +1,6 @@
+name = "basic-example"
+description = "basic example showing how to run a command/script"
+command = "ls | head -n 1"
+interval = "1m"
+timeout = "5s"
+tags = {env="dev"}

@@ -13,7 +13,7 @@ interface OutputWriter {
 fun initializeConfiguredOutputWriters(appConfig: AppConfig): List<OutputWriter> {
 
     // maybe todo use https://github.com/ronmamo/reflections or some other technique to dynamically load writers
-    // the problem with a generic list is that the configuration isn't as clean looking as it could be
+    // the problem with a generic list is that the configuration isn't as clean
 
     val outputWriters: MutableList<OutputWriter> = mutableListOf()
 

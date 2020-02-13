@@ -18,17 +18,30 @@ sealed class OutputConfig
 
 object StdOutOutputConfig : OutputConfig()
 
-class InfluxDbOutputConfig(
+data class InfluxDbOutputConfig(
     val defaultTags: Map<String, String>? = null,
-    val db: String,
-    val uri: String
-) : OutputConfig()
+    var db: String,
+    var uri: String
+) : OutputConfig() {
+    override fun toString(): String {
+        return "db: $db, uri: $uri, defaultTags: $defaultTags"
+    }
+}
 
 
 fun loadConfig(configFile: File): AppConfig {
     check(configFile.exists()) { "Error: configured configFile wasn't found. [${configFile.path}]" }
 
-    return Config()
+    val appConfig = Config()
         .from.toml.file(configFile)
-        .toValue()
+        .toValue<AppConfig>()
+
+    // todo figure out how to merge `.from.env` into this properly. for now WE'LL DO IT LIVE
+    val env = System.getenv()
+    appConfig.outputs.influxdb?.let { influxDbOutputConfig ->
+        env["CHAPERONE_OUTPUTS_INFLUXDB_DB"]?.let { influxDbOutputConfig.db = it }
+        env["CHAPERONE_OUTPUTS_INFLUXDB_URI"]?.let { influxDbOutputConfig.uri = it }
+    }
+
+    return appConfig
 }

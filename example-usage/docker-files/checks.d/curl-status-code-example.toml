@@ -1,0 +1,7 @@
+name = "sample-http-check"
+description = "sample check using curl and bash comparison expression to validate an http response code"
+# this example also shows TOML's triple single quote literal string to let you use double or single quotes within the command
+command = '''[[ $(curl -sL -w '%{http_code}' -o /dev/null 'https://httpbin.org/status/200') == "200" ]]'''
+interval = "1m"
+timeout = "5s"
+tags = {env="dev"}

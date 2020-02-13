@@ -21,9 +21,6 @@ RUN apt-get update && apt-get install -y coreutils bash curl jq dumb-init
 
 COPY --from=builder /home/gradle/src/build/install/chaperone/ /opt/chaperone/
 
-# add scripts we want globally available to the path
-ADD global-scripts /usr/local/bin/
-
 ENTRYPOINT [ "dumb-init", "--" ]
 WORKDIR /opt/chaperone
 CMD ["bin/chaperone"]

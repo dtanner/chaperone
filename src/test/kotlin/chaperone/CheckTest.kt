@@ -29,14 +29,14 @@ class CheckTest {
         val check = Check(
             name = "always succeeds",
             description = "should always be ok",
-            command = "ls",
+            command = "echo -n \"foo\"",
             interval = Duration.ofMinutes(1),
             timeout = Duration.ofSeconds(30)
         )
 
         val result = check.execute(File("."))
         result.status.shouldBe(CheckStatus.OK)
-        result.output.shouldNotBeBlank()
+        result.output.shouldBe("foo")
     }
 
     @Test

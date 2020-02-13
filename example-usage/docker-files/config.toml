@@ -1,0 +1,8 @@
+
+[outputs.stdout]
+
+[outputs.influxdb]
+db="metrics"
+defaultTags={app="myapp-chaperone"}
+uri="http://localhost:8086"
+

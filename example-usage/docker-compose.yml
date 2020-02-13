@@ -1,0 +1,26 @@
+influxdb:
+  image: influxdb:latest
+  container_name: influxdb
+  ports:
+    - "8083:8083"
+    - "8086:8086"
+    - "8090:8090"
+
+grafana:
+  image: grafana/grafana:latest
+  container_name: grafana
+  links:
+    - influxdb
+  ports:
+    - "3000:3000"
+  environment:
+    # the statusmap panel works great with checks, and is used in the sample dashboard that can be imported.
+    - GF_INSTALL_PLUGINS=flant-statusmap-panel
+
+chaperone:
+  build: .
+  links:
+    - influxdb
+  environment:
+    # you can override most chaperone configuration values through environment variables. just use the "CHAPERONE_" prefix.
+    - CHAPERONE_OUTPUTS_INFLUXDB_URI=http://influxdb:8086
