@@ -11,7 +11,7 @@ class StdOutWriter : OutputWriter {
 
         val sb = StringBuilder()
             .append(ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME).padEnd(33))
-            .append(check.name.padEnd(20))
+            .append(check.name.padEnd(30))
             .append(checkResult.status.name.padEnd(5))
             .append(checkResult.output?.trimEnd())
 
