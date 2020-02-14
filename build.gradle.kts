@@ -31,6 +31,11 @@ dependencies {
     // config
     implementation("com.uchuhimo:konf:0.22.1")
 
+    // api
+    implementation("org.http4k:http4k-core:3.235.0")
+    implementation("org.http4k:http4k-server-jetty:3.235.0")
+    implementation("org.http4k:http4k-server-undertow:3.235.0")
+
     val jacksonVersion = "2.10.1"
     api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     api("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")

@@ -6,6 +6,7 @@ import com.uchuhimo.konf.toValue
 import java.io.File
 
 data class AppConfig(
+    val apiServerPort: Int = 8080,
     val outputs: Outputs
 )
 
