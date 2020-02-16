@@ -27,6 +27,7 @@ private val log = KotlinLogging.logger {}
 
 class App : CliktCommand() {
     private val checksDir: String by option(help = "directory containing the check definitions to run").default("/chaperone/checks.d")
+    private val alertsDir: String by option(help = "directory containing any alerting handlers").default("/chaperone/alerts.d")
     private val configFile: String by option(help = "configuration file").default("/chaperone/config.toml")
 
     override fun run() {
@@ -35,6 +36,7 @@ class App : CliktCommand() {
         val checksDirFile = File(checksDir)
         val checks = loadChecks(checksDirFile)
         val config = loadConfig(File(configFile))
+        val alertHandlers = loadAlertHandlers(File(alertsDir))
         val outputWriters = initializeConfiguredOutputWriters(config)
 
         startApiServer(checks, config.apiServerPort)
@@ -46,6 +48,22 @@ class App : CliktCommand() {
                         while (true) {
                             val result = check.execute(checksDirFile)
                             outputWriters.forEach { it.write(check, result) }
+
+                            // todo encapsulate alert handling
+                            if (result.status == CheckStatus.FAIL) {
+                                check.failureCount += 1
+                                if (check.failureCount == check.alertThreshold) {
+                                    // failure alert
+                                    alertHandlers.forEach { it.handleAlert(check, result, it.parentFile) }
+                                }
+                            } else {
+                                if (check.failureCount >= check.alertThreshold) {
+                                    // potential alert recovery
+                                    alertHandlers.forEach { it.handleAlert(check, result, it.parentFile) }
+                                }
+                                check.failureCount = 0
+                            }
+
                             delay(check.interval.toMillis())
                         }
                     }
@@ -53,7 +71,6 @@ class App : CliktCommand() {
             }
             job.join()
         }
-
     }
 
     private fun startApiServer(checks: List<Check>, port: Int) {

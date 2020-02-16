@@ -16,6 +16,8 @@ data class Check(
     val command: String,
     val interval: Duration,
     val timeout: Duration,
+    var failureCount: Int = 1,
+    val alertThreshold: Int = -1,
     val tags: Map<String, String> = mapOf()
 ) {
     fun execute(workingDirectory: File): CheckResult {
