@@ -1,0 +1,5 @@
+name = "sample-check-2"
+description = "sample check 2"
+command = "true"
+interval = "10s"
+timeout = "30s"

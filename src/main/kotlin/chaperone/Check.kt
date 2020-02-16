@@ -48,16 +48,14 @@ data class CheckResult(
 )
 
 fun loadChecks(checksDirectory: File): List<Check> {
-    check(checksDirectory.isDirectory) { "Error: configured checksDirectory wasn't found. [${checksDirectory.path}]" }
-    val checksFiles = checksDirectory.listFiles()
-    if (checksFiles == null || checksFiles.isEmpty()) {
-        throw IllegalStateException("checks directory is empty: ${checksDirectory.name}")
-    }
+    check(checksDirectory.isDirectory) { "Error: checksDirectory wasn't found. [${checksDirectory.path}]" }
+    checksDirectory.listFiles() ?: throw IllegalStateException("checks directory is empty. ${checksDirectory.path}")
 
-    return checksFiles.map { checksFile ->
-        Config()
-            .from.toml.file(checksFile)
-            .toValue<Check>()
+    val checks : MutableList<Check> = mutableListOf()
+    checksDirectory.walkTopDown().forEach {
+        if (it.isFile) {
+            checks.add(Config().from.toml.file(it).toValue())
+        }
     }
-
+    return checks
 }
