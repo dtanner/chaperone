@@ -1,14 +1,33 @@
-# local-dev
-Provides a docker-compose file with some sample checks configured to send output to a local influxdb.  
-Also includes a local grafana container with a sample dashboard to show how you can view the sample data.
+# Getting Started with a sample instance using docker-compose
+The example-usage directory provides a docker-compose file with some sample checks, configured to write output to stdout and influxdb.
+The compose file includes both influxdb and grafana, along with a sample dashboard you can import.
+It uses the [Statusmap plugin](https://grafana.com/grafana/plugins/flant-statusmap-panel), which is installed via the docker-compose configuration.
 
-Usage: `docker-compose up --build chaperone`
-
-Grafana URL: http://localhost:3000
+### Initial local setup instructions
+1. Run the apps: `docker-compose up`
+2. After seeing some logs from the influx and grafana containers starting up, you should see chaperone execute some sample checks every minute like this:  
+The simulated checks are configured to randomly fail about 1% of the time, so occasionally you should see some "failure" scenarios.
+```
+chaperone_1  | 2020-02-17 20:41:04,291 INFO  c.writer.InfluxDbWriter |  influxdb config: db: metrics, uri: http://influxdb:8086, defaultTags: {app=myapp-chaperone}
+chaperone_1  | 2020-02-17 20:41:04,320 INFO  i.m.i.InfluxMeterRegistry |  publishing metrics to influx every 1m
+chaperone_1  | 2020-02-17T20:41:04.547812Z      simulated-check-3   OK   simulated pass
+chaperone_1  | 2020-02-17T20:41:04.550809Z      simulated-check-5   OK   simulated pass
+chaperone_1  | 2020-02-17T20:41:04.641438Z      simulated-check-1   OK   simulated pass
+chaperone_1  | 2020-02-17T20:41:04.648792Z      basic-example       OK   basic-example.toml
+chaperone_1  | 2020-02-17T20:41:04.656174Z      simulated-check-4   OK   simulated pass
+chaperone_1  | 2020-02-17T20:41:04.666956Z      simulated-check-2   OK   simulated pass
+chaperone_1  | 2020-02-17T20:41:04.965854Z      sample-http-check   OK
+```
+2. Now let's get grafana working.  Navigate to the local grafana instance at http://localhost:3000  
 Default User: `admin/admin`
+3. Create a new InfluxDB datasource.  
+Url: `http://influxdb:8086`  
+Database: `metrics` (it takes a minute for the database to be created by the app, but should get automatically created)
+4. After successfully saving and testing the datasource, create a new dashboard using the `+ -> Import` action. Select the `Sample Check Dashboard-xxx.json` file located in this directory.
 
-The InfluxDb datasource url should be configured as:
-Url: `http://influxdb:8086`
-Database: `metrics` (it might not be created yet, but should be auto-created after a minute when the metrics are published)
-A sample grafana dashboard export is also included in this directory
-Import it into grafana using the import tool to see how you can use it with the check results.
+After importing the dashboard, you should see it being populated with data that looks something like this:  
+![](sample-check-dashboard.png)
+
+That's it!
+
+Also included is an [example dashboard](example-usage/Sample Check Dashboard-1581612802772.json) you can import that contains a panel configured to send alerts if the check results have failed upon successive failures.

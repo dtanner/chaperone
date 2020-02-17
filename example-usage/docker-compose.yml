@@ -1,6 +1,6 @@
 influxdb:
   image: influxdb:latest
-  container_name: influxdb
+  container_name: chaperone_influxdb
   ports:
     - "8083:8083"
     - "8086:8086"
@@ -8,7 +8,7 @@ influxdb:
 
 grafana:
   image: grafana/grafana:latest
-  container_name: grafana
+  container_name: chaperone_grafana
   links:
     - influxdb
   ports:
