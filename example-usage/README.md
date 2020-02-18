@@ -6,7 +6,6 @@ It uses the [Statusmap plugin](https://grafana.com/grafana/plugins/flant-statusm
 ### Initial local setup instructions
 1. Run the apps: `docker-compose up`
 2. After seeing some logs from the influx and grafana containers starting up, you should see chaperone execute some sample checks every minute like this:  
-The simulated checks are configured to randomly fail about 1% of the time, so occasionally you should see some "failure" scenarios.
 ```
 chaperone_1  | 2020-02-17 20:41:04,291 INFO  c.writer.InfluxDbWriter |  influxdb config: db: metrics, uri: http://influxdb:8086, defaultTags: {app=myapp-chaperone}
 chaperone_1  | 2020-02-17 20:41:04,320 INFO  i.m.i.InfluxMeterRegistry |  publishing metrics to influx every 1m
@@ -18,6 +17,8 @@ chaperone_1  | 2020-02-17T20:41:04.656174Z      simulated-check-4   OK   simulat
 chaperone_1  | 2020-02-17T20:41:04.666956Z      simulated-check-2   OK   simulated pass
 chaperone_1  | 2020-02-17T20:41:04.965854Z      sample-http-check   OK
 ```
+The simulated checks are configured to randomly fail about 1% of the time, so occasionally you should see some FAIL scenarios.
+
 2. Now let's get grafana working.  Navigate to the local grafana instance at http://localhost:3000  
 Default User: `admin/admin`
 3. Create a new InfluxDB datasource.  
