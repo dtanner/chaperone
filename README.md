@@ -37,6 +37,8 @@ defaultTags={app="myapp-chaperone"} # optional tags applied to all your checks
 uri="http://localhost:8086"
 ```  
 
+[More details](./src/main/kotlin/chaperone/writer/README.md)
+
 ## Docker
 The base image uses debian-slim. I originally used alpine-slim, but I was spending more time figuring out how to add dependencies than I was writing checks.
 
