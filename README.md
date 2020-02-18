@@ -17,10 +17,11 @@ interval = "1m"
 timeout = "5s"
 tags = {env="dev"} # optional - tags let you categorize the output in tools like InfluxDB/Grafana
 ```
-The command executes as a bash command, so the sky's the limit.  Add any apps or scripts to the app that you want and call them.  
-You might not even need to call a script file.  For example, if you just want to check that an HTTP call returns a 200 status code, do this:  
+The command executes as a bash command, so the sky's the limit.  Add any apps or scripts to the app that you want and call them.
+You might not even need to call a script file.  For example, if you just want to check that an HTTP call returns a 200 status code, try this:  
 `command = '''[[ $(curl -sL -w '%{http_code}' -o /dev/null 'https://httpbin.org/status/200') == "200" ]]'''`  
-*For those new to TOML, the triple-ticks indicate a literal string, which then lets us use single and double quotes in the command without having to escape them. This is why we use TOML and not JSON or YAML.*
+
+*For those new to TOML, the triple-ticks indicate a literal string, which lets us use single and double quotes in the command without having to escape them. This is why we use TOML and not JSON or YAML.*
 
 You shove all your checks in a directory, and when the app starts up, it runs them on their schedule.
 
@@ -44,10 +45,10 @@ See the [example usage](example-usage/README.md) directory for an example projec
 Take that example, then replace its checks with whatever you want to do.  
 
 # Tips
-- Each check's command is executed with a working directory of the check's directory. That means you can use relative paths in the command definition.
-it makes it easier to test your command locally in a terminal, and then copy/paste the command into a check config when it's ready.
-- The `checks.d` directory can contain subdirectories of files.
-You might find it easier to manage your checks if they're organized by feature/type/environment etc...
+- Each check's command is executed from the directory of that check, so you can use relative paths in the command definition.
+This makes it easier to test your command locally in a terminal, then copy/paste the command into a check config when it's ready.
+- The `checks.d` directory can contain subdirectories of files. e.g. `/checks.d/http/test-a.toml`, or `/checks.d/stage/test-a.toml`.
+You may find it easier to manage your checks if they're organized by feature/type/environment etc...
 
 # Contributions
-The app is written in kotlin, and uses the standard kotlin code format. 
+The app is written in kotlin, and uses the standard kotlin code format. Questions, comments, and pull requests welcome.
