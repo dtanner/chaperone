@@ -3,7 +3,6 @@
 ## StdOut
 Writes results to stdout, formatted as:  
 $timestamp $check_name $status $check_output  
-e.g.
 ```
 2020-02-17T20:41:04.547812Z      simulated-check-3   OK   simulated pass
 ```
