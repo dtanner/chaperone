@@ -8,15 +8,20 @@ $timestamp $check_name $status $check_output
 ```
 
 ## InfluxDB
-Writes to InfluxDB as a Timer.  Counts make more logical sense, but i couldn't figure out how to combine them with the statusmap plugin, 
-since it wants the retrieved value to be a discrete value of e.g. 0 for success, 1 for fail, etc.  
-https://grafana.com/grafana/plugins/flant-statusmap-panel
-
-It records a `0` value for OK, and `1` for FAIL to a metric named `check_status_code`. 
-From that you can use a query to find failures using the max(upper) column. e.g.:  
-`SELECT max("upper") FROM "check_status_code" WHERE ("app" = 'foo') AND $timeFilter GROUP BY time($__interval), "check" fill(null)`  
-You can use this query for visualization with statusmap charts, and also for alerting with a standard graph. 
+Writes to InfluxDB as a [Micrometer Timer](http://micrometer.io/docs/concepts#_timers), whose rows look like this:
+```
+select * from check_status_code
+name: check_status_code
+time                app             check             count env mean metric_type sum upper
+----                ---             -----             ----- --- ---- ----------- --- -----
+1581693844323000000 myapp-chaperone simulated-check-1 2     dev 0    histogram   0   0
+1581694383566000000 myapp-chaperone simulated-check-1 2     dev 0.5  histogram   1   1
+```
+It records a `0` value for OK, and `1` for FAIL to a metric named `check_status_code`.
+The reason it uses a Timer is because it stores the upper with each metric, which lets us query for any failures within a timespan. e.g.:  
+`SELECT max("upper") FROM "check_status_code" WHERE ("app" = 'myapp-chaperone') AND $timeFilter GROUP BY time($__interval), "check" fill(null)`  
+You can use this query for visualization with statusmap graphs, and also for alerting with a standard graph. 
 Having a fill of null lets you pessimisticly alert on missing values in case there's an issue running the checks or getting to their data.  
 
-Default tags and any check-specific tags are included as tags to InfluxDB, so you can slice and dice different charts based on those.
+Default tags and any check-specific tags become columns in InfluxDB, so you can slice and dice different charts based on those.
 e.g. Maybe you want a separate chart or alerting rules based on an `env` tag that you've specified in the checks.
