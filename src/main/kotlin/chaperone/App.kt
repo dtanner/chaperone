@@ -5,6 +5,7 @@ import chaperone.writer.initializeConfiguredOutputWriters
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -40,7 +41,7 @@ class App : CliktCommand() {
         startApiServer(checks, config.apiServerPort)
 
         runBlocking {
-            val job = GlobalScope.launch {
+            val job = launch(Dispatchers.IO) {
                 checks.forEach { check ->
                     launch {
                         while (true) {

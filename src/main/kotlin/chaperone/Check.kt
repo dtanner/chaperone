@@ -25,7 +25,7 @@ data class Check(
             val proc = Runtime.getRuntime().exec(bashCommand, null, workingDirectory)
             proc.waitFor(timeout.seconds, TimeUnit.SECONDS)
             CheckResult(status = CheckStatus.fromExitCode(proc.exitValue()), output = proc.inputStream.bufferedReader().readText())
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             log.error(e) { "Exception caught executing command: $this" }
             CheckResult(status = CheckStatus.FAIL)
         }
