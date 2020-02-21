@@ -9,15 +9,14 @@ It uses the [Statusmap plugin](https://grafana.com/grafana/plugins/flant-statusm
 ```
 chaperone_1  | 2020-02-17 20:41:04,291 INFO  c.writer.InfluxDbWriter |  influxdb config: db: metrics, uri: http://influxdb:8086, defaultTags: {app=myapp-chaperone}
 chaperone_1  | 2020-02-17 20:41:04,320 INFO  i.m.i.InfluxMeterRegistry |  publishing metrics to influx every 1m
-chaperone_1  | 2020-02-17T20:41:04.547812Z      simulated-check-3   OK   simulated pass
-chaperone_1  | 2020-02-17T20:41:04.550809Z      simulated-check-5   OK   simulated pass
-chaperone_1  | 2020-02-17T20:41:04.641438Z      simulated-check-1   OK   simulated pass
-chaperone_1  | 2020-02-17T20:41:04.648792Z      basic-example       OK   basic-example.toml
-chaperone_1  | 2020-02-17T20:41:04.656174Z      simulated-check-4   OK   simulated pass
-chaperone_1  | 2020-02-17T20:41:04.666956Z      simulated-check-2   OK   simulated pass
-chaperone_1  | 2020-02-17T20:41:04.965854Z      sample-http-check   OK
+chaperone_1  | 2020-02-21T01:20:02.372945Z      simulated-check               OK   {env=dev}                simulated pass
+chaperone_1  | 2020-02-21T01:20:02.374014Z      basic-example                 OK   {env=dev}                basic-example.toml
+chaperone_1  | 2020-02-21T01:20:02.530046Z      template example - a          OK   {letter=a, env=test}     a
+chaperone_1  | 2020-02-21T01:20:02.531372Z      template example - b          OK   {letter=b, env=test}     b
+chaperone_1  | 2020-02-21T01:20:02.532529Z      template example - c          OK   {letter=c, env=test}     c
+chaperone_1  | 2020-02-21T01:20:02.904204Z      sample-http-check             OK   {env=dev}
 ```
-The simulated checks are configured to randomly fail about 1% of the time, so occasionally you should see some FAIL scenarios.
+The simulated check is configured to randomly fail about 1% of the time, so occasionally you should see some FAIL scenarios for that one.
 
 2. Now let's get grafana working.  Navigate to the local grafana instance at http://localhost:3000  
 Default User: `admin/admin`

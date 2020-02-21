@@ -1,0 +1,36 @@
+# Warning - this is a more advanced example. See other examples for more basic checks.
+#
+description = "example showing how to run a templated multi-check command"
+
+# the template is a command that when run will pass its outputs to the "command" property.
+# in this example, its output will be 3 lines each containing a letter. each line will be passed to the command and create a separate check result
+template = "for letter in a b c; do echo $letter; done"
+
+# when using a template, the name property uses the information produced by the template.
+# for each check created by the template, the name can access the input as bash positional arguments.
+# in this example, we're adding the first argument from the template output to the name of the command.
+# note that if you use a template, you must reference at least one template arg so that your generated checks are uniquely named.
+name = "template example - $1"
+
+# the command in a template configuration receives the output from the template,
+# and executes the specified command, adding in positional arguments to its call.
+# e.g. this will simply print out the first argument from the template output.
+command = "echo -n $1"
+
+interval = "1m"
+timeout = "5s"
+
+# tags are another aspect that can take advantage of template arguments.
+# in this example, we're adding a tag based on the letter used in each check.
+tags = {env="test",letter="$1"}
+
+# advanced tips:
+# by default, the template output is expected to be newline-separated.
+# you can choose a different separator by specifying a templateOutputSeparator property.
+# e.g. templateOutputSeparator = "^".  Try to use newlines though.
+
+
+# each argument of output from the template can be more than a single word.
+# the arguments are expected to be separated by whitespace, and you use positional arguments to specify argument.
+# e.g. $1 for the first , $2 for the 2nd, $@ for all the arguments
+# see the `CheckTest.templated check multiple command arg example` for a working example.

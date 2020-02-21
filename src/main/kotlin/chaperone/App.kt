@@ -6,7 +6,6 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -45,8 +44,10 @@ class App : CliktCommand() {
                 checks.forEach { check ->
                     launch {
                         while (true) {
-                            val result = check.execute(checksDirFile)
-                            outputWriters.forEach { it.write(check, result) }
+                            val results = check.execute(checksDirFile)
+                            results.forEach { result ->
+                                outputWriters.forEach { it.write(result) }
+                            }
                             delay(check.interval.toMillis())
                         }
                     }

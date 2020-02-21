@@ -11,7 +11,7 @@ FROM gradle:jdk11 as builder
 COPY --from=cache /home/gradle/cache_home /home/gradle/.gradle
 COPY . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN gradle check installDist
+RUN gradle clean check installDist
 
 
 # this builds the runtime container that includes the compiled code
