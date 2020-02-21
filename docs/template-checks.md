@@ -38,7 +38,7 @@ stdout might look like this:
 The `template` value is what creates the dynamic list of checks. 
 Its output is used to generate the arguments that will be passed into the `command`, `name`, and `tags` properties.  
 The `name`, `tags`, and `command` properties can use bash positional argument syntax to perform string interpolation. 
-e.g. $1, $2, $@ should all work.
+e.g. `$1`, `$2`, `$@` should all work.
 
 There's a couple tests for templates in [CheckTest.kt](../src/test/kotlin/chaperone/CheckTest.kt) for reference.  
 There's also an [annotated example](../example-usage/docker-files/checks.d/template-example.toml) to start from.
