@@ -55,7 +55,7 @@ You may find it easier to manage your checks if they're organized by feature/typ
 
 # Template Checks
 In simple mode, you call a single script, and it returns a single result.  
-If you want to call a script that creates a bunch of checks that only differ by their parameters, you can do this using the concept of [Template Checks](./docs/template-checks.md)
+If you want to run multiple checks driven by a template, see [Template Checks](./docs/template-checks.md).
 
 # Contributions
 The app is written in kotlin, and uses the standard kotlin code format. Questions, comments, and pull requests welcome.
