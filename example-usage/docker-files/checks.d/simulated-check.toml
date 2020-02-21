@@ -1,0 +1,6 @@
+name = "simulated check"
+description = "simulated check - should fail about 1% each time it's executed"
+command = "../scripts/fail-x-percent.sh 1"
+interval = "30s"
+timeout = "10s"
+tags = {env="dev"}

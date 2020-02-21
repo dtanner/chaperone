@@ -1,19 +1,20 @@
 package chaperone.writer
 
-import chaperone.Check
 import chaperone.CheckResult
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 class StdOutWriter : OutputWriter {
 
-    override fun write(check: Check, checkResult: CheckResult) {
+    override fun write(checkResult: CheckResult) {
 
         val sb = StringBuilder()
             .append(ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME).padEnd(33))
-            .append(check.name.padEnd(30))
+            .append(checkResult.name.padEnd(30))
             .append(checkResult.status.name.padEnd(5))
-            .append(checkResult.output?.trimEnd())
+            .append(checkResult.tags.toString().padEnd(25))
+
+        checkResult.output?.let { sb.append(it.trimEnd()) }
 
         println(sb)
     }

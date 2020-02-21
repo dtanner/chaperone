@@ -1,16 +1,17 @@
 # Chaperone
-Chaperone is a simple and extensible monitoring application, intended to be deployed as a docker container.
+Chaperone is a simple yet powerful monitoring application, intended to be deployed as a docker container.
 
 # Features
 - Scheduled execution of arbitrary checks. Execute commands directly in a check, or call out to your own custom commands.
-- Simple configuration using TOML files.
-- Pluggable architecture makes it easy to add new output destinations for your check results. Some batteries already included, like InfluxDB, and more will be added over time. 
+- Simple configuration using TOML files. 
+- Basic checks are super easy, and dynamic template-driven checks are barely an inconvenience.
+- Configurable output destinations for your check results, starting with stdout and InfluxDB.
 
 # Main Concepts
 ## Check
 Each check is a TOML file that looks like this:  
 ```toml
-name = "basic-example"
+name = "basic example"
 description = "basic example showing how to run a command/script"
 command = "ls | head -n 1" # the command exit code is used to determine status. 0 = OK, anything else = FAIL
 interval = "1m"
@@ -51,6 +52,10 @@ Take that example, then replace its checks with whatever you want to do.
 This makes it easier to test your command locally in a terminal, then copy/paste the command into a check config when it's ready.
 - The `checks.d` directory can contain subdirectories of files. e.g. `/checks.d/http/test-a.toml`, or `/checks.d/stage/test-a.toml`.
 You may find it easier to manage your checks if they're organized by feature/type/environment etc...
+
+# Template Checks
+In simple mode, you call a single script, and it returns a single result.  
+If you want to call a script that creates a bunch of checks that only differ by their parameters, you can do this using the concept of [Template Checks](./docs/template-checks.md)
 
 # Contributions
 The app is written in kotlin, and uses the standard kotlin code format. Questions, comments, and pull requests welcome.

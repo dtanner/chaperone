@@ -1,12 +1,11 @@
 package chaperone.writer
 
 import chaperone.AppConfig
-import chaperone.Check
 import chaperone.CheckResult
 import chaperone.InfluxDbOutputConfig
 
 interface OutputWriter {
-    fun write(check: Check, checkResult: CheckResult)
+    fun write(checkResult: CheckResult)
 }
 
 

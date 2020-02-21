@@ -1,6 +1,5 @@
 package chaperone.writer
 
-import chaperone.Check
 import chaperone.CheckResult
 import chaperone.CheckStatus
 import chaperone.InfluxDbOutputConfig
@@ -37,7 +36,7 @@ class InfluxDbWriter(config: InfluxDbOutputConfig) : OutputWriter {
         }
     }
 
-    override fun write(check: Check, checkResult: CheckResult) {
+    override fun write(checkResult: CheckResult) {
         // counts make more logical sense, but i couldn't figure out how to combine them with the statusmap plugin, since it wants
         // the retrieved value to be a discrete value of e.g. 0 for success, 1 for fail, etc.
         // https://grafana.com/grafana/plugins/flant-statusmap-panel
@@ -47,8 +46,8 @@ class InfluxDbWriter(config: InfluxDbOutputConfig) : OutputWriter {
         // this also allows us to alert on no data, since rows with 0 for values is different than no data.
 
         val value = if (checkResult.status == CheckStatus.OK) 0L else 1L
-        val tags = check.tags.toTagList()
-        tags.add(Tag.of("check", check.name))
+        val tags = checkResult.tags.toTagList()
+        tags.add(Tag.of("check", checkResult.name))
         meterRegistry.timer("check.status.code", tags).record(value, TimeUnit.MILLISECONDS)
     }
 }

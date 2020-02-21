@@ -1,4 +1,4 @@
-name = "basic-example"
+name = "basic example"
 description = "basic example showing how to run a command/script"
 command = "ls | head -n 1"
 interval = "1m"
