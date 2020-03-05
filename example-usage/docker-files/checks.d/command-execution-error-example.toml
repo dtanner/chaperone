@@ -1,0 +1,6 @@
+name = "command execution error"
+description = "show how you can debug command run issues via log output"
+command = "abc123"
+interval = "1m"
+timeout = "5s"
+tags = {env="dev"}

@@ -35,7 +35,7 @@ data class Check(
                     command = template,
                     timeout = timeout
                 )
-                check(!templateResult.output.isNullOrBlank())
+                check(!templateResult.output.isNullOrBlank()) { "Required output from template command is missing." }
 
                 val commandArgs = templateResult.output.trim().split(templateOutputSeparator)
                 return commandArgs.map { args ->
@@ -134,9 +134,15 @@ fun executeCommand(
     processBuilder.directory(workingDirectory)
     val process = processBuilder.start()
     process.waitFor(timeout.seconds, TimeUnit.SECONDS)
-    val output = if (process.inputStream.available() > 0) {
-        process.inputStream.bufferedReader().use { it.readText() }
-    } else null
+    val output = when {
+        process.inputStream.available() > 0 -> {
+            process.inputStream.bufferedReader().use { it.readText() }
+        }
+        process.errorStream.available() > 0 -> {
+            process.errorStream.bufferedReader().use { it.readText() }
+        }
+        else -> null
+    }
 
     return CommandResult(
         status = CheckStatus.fromExitCode(process.exitValue()),

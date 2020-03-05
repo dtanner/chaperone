@@ -135,4 +135,12 @@ class CheckTest {
         result.output.shouldBe("arg 0: x, arg 1: y")
     }
 
+    @Test
+    fun `command execution error should return the output`() {
+        val command = "abc123"
+        val result = executeCommand(command = command)
+        result.status.shouldBe(CheckStatus.FAIL)
+        result.output.shouldBe("/bin/bash: abc123: command not found\n")
+    }
+
 }
