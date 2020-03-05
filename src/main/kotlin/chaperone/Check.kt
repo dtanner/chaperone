@@ -35,6 +35,12 @@ data class Check(
                     command = template,
                     timeout = timeout
                 )
+                if (templateResult.status == CheckStatus.FAIL) {
+                    val message = "Error executing template. Output: ${templateResult.output}"
+                    println(message)
+                    log.error { message }
+                    return listOf(CheckResult(name = name, status = CheckStatus.FAIL, output = templateResult.output))
+                }
                 check(!templateResult.output.isNullOrBlank()) { "Required output from template command is missing." }
 
                 val commandArgs = templateResult.output.trim().split(templateOutputSeparator)
