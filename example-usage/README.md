@@ -22,12 +22,9 @@ The simulated check is configured to randomly fail about 1% of the time, so occa
 Default User: `admin/admin`
 3. Create a new InfluxDB datasource.  
 Url: `http://influxdb:8086`  
-Database: `metrics` (it takes a minute for the database to be created by the app, but should get automatically created)
-4. After successfully saving and testing the datasource, create a new dashboard using the `+ -> Import` action. Select the `Sample Check Dashboard-xxx.json` file located in this directory.
+Database: `metrics`  
+4. After successfully saving and testing the datasource, create a new dashboard using the `+ -> Import` action. Select the `sample-dashboard.json` file located in this directory.
 
 After importing the dashboard, you should see it being populated with data that looks something like this:  
 ![](sample-check-dashboard.png)
 
-That's it!
-
-Also included is an [example dashboard](example-usage/Sample Check Dashboard-1581612802772.json) you can import that contains a panel configured to send alerts if the check results have failed upon successive failures.
