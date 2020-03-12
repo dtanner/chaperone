@@ -3,55 +3,58 @@ package chaperone.writer
 import chaperone.CheckResult
 import chaperone.CheckStatus
 import chaperone.InfluxDbOutputConfig
-import io.micrometer.core.instrument.Clock
-import io.micrometer.core.instrument.MeterRegistry
-import io.micrometer.core.instrument.Tag
-import io.micrometer.influx.InfluxConfig
-import io.micrometer.influx.InfluxMeterRegistry
 import mu.KotlinLogging
-import java.util.concurrent.TimeUnit
+import okhttp3.OkHttpClient
+import org.http4k.client.OkHttp
+import org.http4k.core.Method
+import org.http4k.core.Request
+import org.http4k.core.Response
+import java.time.Instant
 
 private val log = KotlinLogging.logger {}
 
-class InfluxDbWriter(config: InfluxDbOutputConfig) : OutputWriter {
+class InfluxDbWriter(private val config: InfluxDbOutputConfig) : OutputWriter {
 
-    private val meterRegistry: MeterRegistry
+    private val client = OkHttp(OkHttpClient())
 
     init {
-        val influxConfig: InfluxConfig = object : InfluxConfig {
-            override fun get(k: String): String? = null
-
-            override fun db(): String {
-                return config.db
-            }
-
-            override fun uri(): String = config.uri
-        }
-
         log.info { "influxdb config: $config" }
 
-        meterRegistry = InfluxMeterRegistry(influxConfig, Clock.SYSTEM)
-        if (config.defaultTags != null) {
-            meterRegistry.config().commonTags(config.defaultTags.toTagList())
+        // create database if it doesn't already exist
+        val request = Request(Method.POST, "${config.uri}/query").query("q", "CREATE DATABASE ${config.db}")
+        client(request) { response: Response ->
+            if (response.status.code != 200) {
+                log.error { "Unexpected status ensuring influxdb exists. code=${response.status.code} message=${response.bodyString()}" }
+            }
         }
     }
 
     override fun write(checkResult: CheckResult) {
-        // counts make more logical sense, but i couldn't figure out how to combine them with the statusmap plugin, since it wants
-        // the retrieved value to be a discrete value of e.g. 0 for success, 1 for fail, etc.
-        // https://grafana.com/grafana/plugins/flant-statusmap-panel
+        val tags = (config.defaultTags ?: emptyMap()).plus(checkResult.tags).plus(Pair("check", checkResult.name)).toSortedMap()
 
-        // record a `0` for OK, and `1` for FAIL. then use query to find failures using the max(upper) column.
-        // sample query: SELECT max("upper") FROM "check_status_code" WHERE ("app" = 'foo') AND $timeFilter GROUP BY time($__interval), "check" fill(null)
-        // this also allows us to alert on no data, since rows with 0 for values is different than no data.
+        // maybe todo batch write?
 
-        val value = if (checkResult.status == CheckStatus.OK) 0L else 1L
-        val tags = checkResult.tags.toTagList()
-        tags.add(Tag.of("check", checkResult.name))
-        meterRegistry.timer("check.status.code", tags).record(value, TimeUnit.MILLISECONDS)
+        val line = generateLine(checkResult, tags, Instant.now().toEpochMilli())
+
+        val request = Request(Method.POST, "${config.uri}/write")
+            .query("db", config.db)
+            .query("precision", "ms")
+            .body(line)
+
+        client(request) { response: Response ->
+            if (response.status.code != 204) {
+                log.error { "Unexpected status returned posting to influxdb. code=${response.status.code} message=${response.bodyString()}" }
+            }
+        }
+
     }
-}
 
-fun Map<String, String>.toTagList(): MutableList<Tag> {
-    return this.map { Tag.of(it.key, it.value) }.toMutableList()
+    fun generateLine(checkResult: CheckResult, tags: Map<String, String>, timestamp: Long): String {
+        // https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_tutorial/#special-characters
+        val tagString = tags.map { "${it.key.replace(" ", "\\ ")}=${it.value.replace(" ", "\\ ")}" }.joinToString(separator = ",")
+
+        val fields = "value=${if (checkResult.status == CheckStatus.OK) "0i" else "1i"}"
+
+        return "check_status_code,$tagString $fields $timestamp"
+    }
 }

@@ -23,7 +23,6 @@ dependencies {
     implementation("ch.qos.logback:logback-core:1.2.3")
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("io.github.microutils:kotlin-logging:1.7.6")
-    implementation("io.micrometer:micrometer-registry-influx:latest.release")
 
     // cli parsing
     implementation("com.github.ajalt:clikt:2.4.0")
@@ -32,9 +31,11 @@ dependencies {
     implementation("com.uchuhimo:konf:0.22.1")
 
     // api
-    implementation("org.http4k:http4k-core:3.235.0")
-    implementation("org.http4k:http4k-server-jetty:3.235.0")
-    implementation("org.http4k:http4k-server-undertow:3.235.0")
+    implementation("org.http4k:http4k-core:3.239.0")
+    implementation("org.http4k:http4k-server-jetty:3.239.0")
+    implementation("org.http4k:http4k-server-undertow:3.239.0")
+
+    implementation("org.http4k:http4k-client-okhttp:3.239.0")
 
     val jacksonVersion = "2.10.1"
     api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
