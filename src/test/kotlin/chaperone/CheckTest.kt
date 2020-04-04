@@ -21,7 +21,7 @@ class CheckTest {
 
         val results = check.execute(File("."))
         results[0].status.shouldBe(CheckStatus.OK)
-        results[0].output.shouldBeNull()
+        results[0].stdOut.shouldBeNull()
     }
 
     @Test
@@ -36,7 +36,7 @@ class CheckTest {
 
         val results = check.execute(File("."))
         results[0].status.shouldBe(CheckStatus.OK)
-        results[0].output.shouldBe("foo")
+        results[0].stdOut.shouldBe("foo")
     }
 
     @Test
@@ -51,7 +51,7 @@ class CheckTest {
 
         val results = check.execute(File("."))
         results[0].status.shouldBe(CheckStatus.FAIL)
-        results[0].output.shouldBeNull()
+        results[0].stdOut.shouldBeNull()
     }
 
     @Test
@@ -66,7 +66,7 @@ class CheckTest {
 
         val results = check.execute(File("."))
         results[0].status.shouldBe(CheckStatus.FAIL)
-        results[0].output.shouldBeNull()
+        results[0].stdOut.shouldBeNull()
     }
 
     @Test
@@ -89,12 +89,12 @@ class CheckTest {
 
         val aOutput = results.find { it.name == "template check - a" }
         aOutput.shouldNotBeNull()
-        aOutput.output?.shouldBe("a")
+        aOutput.stdOut?.shouldBe("a")
         aOutput.tags.shouldBe(mapOf("env" to "test", "letter" to "a"))
 
         val bOutput = results.find { it.name == "template check - b" }
         bOutput.shouldNotBeNull()
-        bOutput.output?.shouldBe("b")
+        bOutput.stdOut?.shouldBe("b")
         bOutput.tags.shouldBe(mapOf("env" to "test", "letter" to "b"))
     }
 
@@ -118,12 +118,12 @@ class CheckTest {
 
         val aOutput = results.find { it.name == "template - a" }
         aOutput.shouldNotBeNull()
-        aOutput.output?.shouldBe("x a")
+        aOutput.stdOut?.shouldBe("x a")
         aOutput.tags.shouldBe(mapOf("env" to "test", "mode" to "x", "letter" to "a"))
 
         val bOutput = results.find { it.name == "template - b" }
         bOutput.shouldNotBeNull()
-        bOutput.output?.shouldBe("x b")
+        bOutput.stdOut?.shouldBe("x b")
         bOutput.tags.shouldBe(mapOf("env" to "test", "mode" to "x",  "letter" to "b"))
     }
 
@@ -132,15 +132,24 @@ class CheckTest {
         val command = "echo -n arg 0: $0, arg 1: \$1"
         val args = listOf("x", "y")
         val result = executeCommand(command = command, args = args)
-        result.output.shouldBe("arg 0: x, arg 1: y")
+        result.stdOut.shouldBe("arg 0: x, arg 1: y")
     }
 
     @Test
-    fun `command execution error should return the output`() {
+    fun `command execution error should return stdErr`() {
         val command = "abc123"
         val result = executeCommand(command = command)
         result.status.shouldBe(CheckStatus.FAIL)
-        result.output.shouldBe("/bin/bash: abc123: command not found\n")
+        result.stdOut.shouldBeNull()
+        result.stdErr.shouldBe("/bin/bash: abc123: command not found\n")
+    }
+
+    @Test
+    fun `command with debug on should include the bash debug info in stdErr`() {
+        val result = executeCommand(command = "echo a", debug = true)
+        result.status.shouldBe(CheckStatus.OK)
+        result.stdOut.shouldBe("a\n")
+        result.stdErr.shouldBe("+ echo a\n")
     }
 
 }

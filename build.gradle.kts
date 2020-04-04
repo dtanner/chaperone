@@ -1,6 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.41"
-    // Apply the application plugin to add support for building a CLI application.
+    id("org.jetbrains.kotlin.jvm") version "1.3.70"
     application
 }
 
@@ -12,7 +11,6 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 java.targetCompatibility = JavaVersion.VERSION_11
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
-    // kotlinOptions.allWarningsAsErrors = true
 }
 
 dependencies {
@@ -54,6 +52,5 @@ dependencies {
 }
 
 application {
-    // Define the main class for the application.
     mainClassName = "chaperone.AppKt"
 }

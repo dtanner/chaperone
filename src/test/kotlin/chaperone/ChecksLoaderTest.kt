@@ -25,6 +25,7 @@ class ChecksLoaderTest {
             Check(
                 name = "sample-check-2",
                 description = "sample check 2",
+                debug = true,
                 command = "true",
                 interval = Duration.ofSeconds(10),
                 timeout = Duration.ofSeconds(30)

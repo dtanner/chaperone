@@ -17,6 +17,7 @@ command = "ls | head -n 1" # the command exit code is used to determine status. 
 interval = "1m"
 timeout = "5s"
 tags = {env="dev"} # optional - tags let you categorize the output in tools like InfluxDB/Grafana
+debug = true # optional - defaults to false. If set to true, this logs the commands as they're run.
 ```
 The command executes as a bash command, so the sky's the limit.  Add any apps or scripts to the app that you want and call them.
 You might not even need to call a script file.  For example, if you just want to check that an HTTP call returns a 200 status code, try this:  

@@ -15,6 +15,7 @@ typealias Tags = Map<String, String>
 
 data class Check(
     val name: String,
+    val debug: Boolean = false,
     val description: String? = null,
     val template: String? = null,
     val templateOutputSeparator: String = System.lineSeparator(),
@@ -36,21 +37,29 @@ data class Check(
                     timeout = timeout
                 )
                 if (templateResult.status == CheckStatus.FAIL) {
-                    val message = "Error executing template. Output: ${templateResult.output}"
+                    val message = "Error executing template. stdout: ${templateResult.stdOut}, stderr: ${templateResult.stdErr}"
                     println(message)
                     log.error { message }
-                    return listOf(CheckResult(name = name, status = CheckStatus.FAIL, output = templateResult.output))
+                    return listOf(
+                        CheckResult(
+                            name = name,
+                            status = CheckStatus.FAIL,
+                            stdOut = templateResult.stdOut,
+                            stdErr = templateResult.stdErr
+                        )
+                    )
                 }
-                check(!templateResult.output.isNullOrBlank()) { "Required output from template command is missing." }
+                check(!templateResult.stdOut.isNullOrBlank()) { "Required output from template command is missing." }
 
-                val commandArgs = templateResult.output.trim().split(templateOutputSeparator)
+                val commandArgs = templateResult.stdOut.trim().split(templateOutputSeparator)
                 return commandArgs.map { args ->
                     executeCheck(
                         name = generateName(name, args),
                         workingDirectory = workingDirectory,
                         command = "$command $args",
                         timeout = timeout,
-                        tags = generateTags(tags, args)
+                        tags = generateTags(tags, args),
+                        debug = debug
                     )
                 }
             } else {
@@ -60,7 +69,8 @@ data class Check(
                         workingDirectory = workingDirectory,
                         command = command,
                         timeout = timeout,
-                        tags = tags
+                        tags = tags,
+                        debug = debug
                     )
                 )
             }
@@ -81,7 +91,7 @@ data class Check(
         // bash -c 'echo -n $' is zero-based since there's no script. we want everything to be one-based for consistent configuration
         val oneBasedArgs = listOf("bugfound") + argsString.split(" ") //
         val result = executeCommand(command = "echo -n $escapedCommand", args = oneBasedArgs, timeout = Duration.ofSeconds(1))
-        return result.output ?: throw java.lang.IllegalStateException("expected a generated name but none was produced")
+        return result.stdOut ?: throw java.lang.IllegalStateException("expected a generated name but none was produced")
     }
 
     /**
@@ -96,10 +106,10 @@ data class Check(
             args = oneBasedArgs,
             timeout = Duration.ofSeconds(1)
         )
-        check(!result.output.isNullOrBlank())
+        check(!result.stdOut.isNullOrBlank())
         // the above will produce something like "env:test letter:a"
 
-        return result.output.split(" ").associate { Pair(it.substringBefore(":"), it.substringAfter(":")) }
+        return result.stdOut.split(" ").associate { Pair(it.substringBefore(":"), it.substringAfter(":")) }
     }
 
 }
@@ -112,12 +122,19 @@ fun executeCheck(
     tags: Map<String, String> = mapOf(),
     workingDirectory: File,
     command: String,
-    timeout: Duration
+    timeout: Duration,
+    debug: Boolean
 ): CheckResult {
 
-    val commandResult = executeCommand(workingDirectory = workingDirectory, command = command, timeout = timeout)
+    val commandResult = executeCommand(workingDirectory = workingDirectory, command = command, timeout = timeout, debug = debug)
 
-    return CheckResult(name = name, tags = tags, status = commandResult.status, output = commandResult.output)
+    return CheckResult(
+        name = name,
+        tags = tags,
+        status = commandResult.status,
+        stdOut = commandResult.stdOut,
+        stdErr = commandResult.stdErr
+    )
 }
 
 /**
@@ -127,38 +144,42 @@ fun executeCommand(
     workingDirectory: File = File("."),
     command: String,
     args: List<String>? = null,
-    timeout: Duration = Duration.ofSeconds(5)
+    timeout: Duration = Duration.ofSeconds(5),
+    debug: Boolean = false
 ): CommandResult {
 
+    val bashFlag = if (debug) "-cx" else "-c"
+
     val processBuilder = if (args != null) {
-        ProcessBuilder("/bin/bash", "-c", command, *args.toTypedArray())
+        ProcessBuilder("/bin/bash", bashFlag, command, *args.toTypedArray())
     } else {
-        ProcessBuilder("/bin/bash", "-c", command)
+        ProcessBuilder("/bin/bash", bashFlag, command)
     }
 
-    processBuilder.redirectErrorStream()
+    processBuilder.redirectErrorStream() // todo is this still needed/useful?
     processBuilder.directory(workingDirectory)
     val process = processBuilder.start()
     process.waitFor(timeout.seconds, TimeUnit.SECONDS)
-    val output = when {
-        process.inputStream.available() > 0 -> {
-            process.inputStream.bufferedReader().use { it.readText() }
-        }
-        process.errorStream.available() > 0 -> {
-            process.errorStream.bufferedReader().use { it.readText() }
-        }
-        else -> null
-    }
+
+    val stdOut = if (process.inputStream.available() > 0) {
+        process.inputStream.bufferedReader().use { it.readText() }
+    } else null
+
+    val stdErr = if (process.errorStream.available() > 0) {
+        process.errorStream.bufferedReader().use { it.readText() }
+    } else null
 
     return CommandResult(
         status = CheckStatus.fromExitCode(process.exitValue()),
-        output = output
+        stdOut = stdOut,
+        stdErr = stdErr
     )
 }
 
 data class CommandResult(
     val status: CheckStatus,
-    val output: String? = null
+    val stdOut: String? = null,
+    val stdErr: String? = null
 )
 
 enum class CheckStatus {
@@ -175,7 +196,8 @@ data class CheckResult(
     val name: String,
     val status: CheckStatus,
     val tags: Map<String, String> = mapOf(),
-    val output: String? = null
+    val stdOut: String? = null,
+    val stdErr: String? = null
 )
 
 fun loadChecks(checksDirectory: File): List<Check> {

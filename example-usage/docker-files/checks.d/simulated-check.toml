@@ -4,3 +4,4 @@ command = "../scripts/fail-x-percent.sh 1"
 interval = "30s"
 timeout = "10s"
 tags = {env="dev"}
+debug = true
