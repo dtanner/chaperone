@@ -59,14 +59,15 @@ class CheckTest {
         val check = Check(
             name = "timeout",
             description = "should timeout",
-            command = "sleep 2",
+            command = "./sleep.sh",
             interval = Duration.ofMinutes(1),
             timeout = Duration.ofSeconds(1)
         )
 
-        val results = check.execute(File("."))
+        val results = check.execute(File("src/test/resources"))
         results[0].status.shouldBe(CheckStatus.FAIL)
         results[0].stdOut.shouldBeNull()
+        results[0].stdErr.shouldBe("timeout executing check")
     }
 
     @Test

@@ -169,11 +169,18 @@ fun executeCommand(
         process.errorStream.bufferedReader().use { it.readText() }
     } else null
 
-    return CommandResult(
-        status = CheckStatus.fromExitCode(process.exitValue()),
-        stdOut = stdOut,
-        stdErr = stdErr
-    )
+    return try {
+        CommandResult(
+            status = CheckStatus.fromExitCode(process.exitValue()),
+            stdOut = stdOut,
+            stdErr = stdErr
+        )
+    } catch (e: IllegalThreadStateException) {
+        CommandResult(
+            status = CheckStatus.FAIL,
+            stdErr = "timeout executing check"
+        )
+    }
 }
 
 data class CommandResult(
