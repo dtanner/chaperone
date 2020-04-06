@@ -15,7 +15,8 @@ RUN gradle clean check installDist
 
 
 # this builds the runtime container that includes the compiled code
-FROM adoptopenjdk/openjdk11:debian-slim
+FROM adoptopenjdk/openjdk11:debian
+#FROM adoptopenjdk/openjdk11:debian-slim
 
 RUN apt-get update && apt-get install -y coreutils bash curl jq dumb-init procps
 
