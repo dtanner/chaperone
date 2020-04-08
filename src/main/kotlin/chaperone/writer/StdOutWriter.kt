@@ -14,8 +14,7 @@ class StdOutWriter : OutputWriter {
             .append(checkResult.status.name.padEnd(5))
             .append(checkResult.tags.toString().padEnd(25))
 
-        checkResult.stdOut?.let { sb.append(it.trimEnd()) }
-        checkResult.stdErr?.let { sb.append(" stderr: " + it.trimEnd()) }
+        checkResult.output?.let { sb.append(it.trimEnd()) }
 
         println(sb)
     }

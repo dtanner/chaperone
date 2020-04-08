@@ -1,7 +1,7 @@
 package chaperone
 
 import io.kotlintest.matchers.boolean.shouldBeTrue
-import io.kotlintest.matchers.types.shouldBeNull
+import io.kotlintest.matchers.string.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.Test
@@ -21,7 +21,7 @@ class CheckTest {
 
         val results = check.execute(File("."))
         results[0].status.shouldBe(CheckStatus.OK)
-        results[0].stdOut.shouldBeNull()
+        results[0].output.shouldBeEmpty()
     }
 
     @Test
@@ -36,7 +36,7 @@ class CheckTest {
 
         val results = check.execute(File("."))
         results[0].status.shouldBe(CheckStatus.OK)
-        results[0].stdOut.shouldBe("foo")
+        results[0].output.shouldBe("foo")
     }
 
     @Test
@@ -51,7 +51,7 @@ class CheckTest {
 
         val results = check.execute(File("."))
         results[0].status.shouldBe(CheckStatus.FAIL)
-        results[0].stdOut.shouldBeNull()
+        results[0].output.shouldBeEmpty()
     }
 
     @Test
@@ -59,15 +59,14 @@ class CheckTest {
         val check = Check(
             name = "timeout",
             description = "should timeout",
-            command = "./sleep.sh",
+            command = "./hang.sh",
             interval = Duration.ofMinutes(1),
             timeout = Duration.ofSeconds(1)
         )
 
         val results = check.execute(File("src/test/resources"))
         results[0].status.shouldBe(CheckStatus.FAIL)
-        results[0].stdOut.shouldBeNull()
-        results[0].stdErr.shouldBe("timeout executing check")
+        results[0].output.shouldBe("timeout executing check")
     }
 
     @Test
@@ -90,12 +89,12 @@ class CheckTest {
 
         val aOutput = results.find { it.name == "template check - a" }
         aOutput.shouldNotBeNull()
-        aOutput.stdOut?.shouldBe("a")
+        aOutput.output?.shouldBe("a")
         aOutput.tags.shouldBe(mapOf("env" to "test", "letter" to "a"))
 
         val bOutput = results.find { it.name == "template check - b" }
         bOutput.shouldNotBeNull()
-        bOutput.stdOut?.shouldBe("b")
+        bOutput.output?.shouldBe("b")
         bOutput.tags.shouldBe(mapOf("env" to "test", "letter" to "b"))
     }
 
@@ -119,12 +118,12 @@ class CheckTest {
 
         val aOutput = results.find { it.name == "template - a" }
         aOutput.shouldNotBeNull()
-        aOutput.stdOut?.shouldBe("x a")
+        aOutput.output?.shouldBe("x a")
         aOutput.tags.shouldBe(mapOf("env" to "test", "mode" to "x", "letter" to "a"))
 
         val bOutput = results.find { it.name == "template - b" }
         bOutput.shouldNotBeNull()
-        bOutput.stdOut?.shouldBe("x b")
+        bOutput.output?.shouldBe("x b")
         bOutput.tags.shouldBe(mapOf("env" to "test", "mode" to "x",  "letter" to "b"))
     }
 
@@ -133,24 +132,22 @@ class CheckTest {
         val command = "echo -n arg 0: $0, arg 1: \$1"
         val args = listOf("x", "y")
         val result = executeCommand(command = command, args = args)
-        result.stdOut.shouldBe("arg 0: x, arg 1: y")
+        result.output.shouldBe("arg 0: x, arg 1: y")
     }
 
     @Test
-    fun `command execution error should return stdErr`() {
+    fun `command execution error should fail - look for errors in the logs`() {
         val command = "abc123"
         val result = executeCommand(command = command)
         result.status.shouldBe(CheckStatus.FAIL)
-        result.stdOut.shouldBeNull()
-        result.stdErr.shouldBe("/bin/bash: abc123: command not found\n")
+        result.output.shouldBeEmpty()
     }
 
     @Test
-    fun `command with debug on should include the bash debug info in stdErr`() {
+    fun `command with debug on should include the bash debug info in the logs`() {
         val result = executeCommand(command = "echo a", debug = true)
         result.status.shouldBe(CheckStatus.OK)
-        result.stdOut.shouldBe("a\n")
-        result.stdErr.shouldBe("+ echo a\n")
+        result.output.shouldBe("a\n")
     }
 
 }

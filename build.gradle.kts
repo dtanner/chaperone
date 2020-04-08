@@ -35,6 +35,9 @@ dependencies {
 
     implementation("org.http4k:http4k-client-okhttp:3.239.0")
 
+    // command execution management
+    implementation("org.zeroturnaround:zt-exec:1.11")
+
     val jacksonVersion = "2.10.1"
     api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     api("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")

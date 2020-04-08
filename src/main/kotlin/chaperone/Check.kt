@@ -5,11 +5,16 @@ import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.toml
 import com.uchuhimo.konf.toValue
 import mu.KotlinLogging
+import org.zeroturnaround.exec.ProcessExecutor
+import org.zeroturnaround.exec.stream.slf4j.Slf4jStream
 import java.io.File
 import java.time.Duration
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
+
 
 private val log = KotlinLogging.logger {}
+private val stdErrLogging = Slf4jStream.of(log).asInfo()
 
 typealias Tags = Map<String, String>
 
@@ -37,21 +42,20 @@ data class Check(
                     timeout = timeout
                 )
                 if (templateResult.status == CheckStatus.FAIL) {
-                    val message = "Error executing template. stdout: ${templateResult.stdOut}, stderr: ${templateResult.stdErr}"
+                    val message = "Error executing template. output: ${templateResult.output}"
                     println(message)
                     log.error { message }
                     return listOf(
                         CheckResult(
                             name = name,
                             status = CheckStatus.FAIL,
-                            stdOut = templateResult.stdOut,
-                            stdErr = templateResult.stdErr
+                            output = templateResult.output
                         )
                     )
                 }
-                check(!templateResult.stdOut.isNullOrBlank()) { "Required output from template command is missing." }
+                check(!templateResult.output.isNullOrBlank()) { "Required output from template command is missing." }
 
-                val commandArgs = templateResult.stdOut.trim().split(templateOutputSeparator)
+                val commandArgs = templateResult.output.trim().split(templateOutputSeparator)
                 return commandArgs.map { args ->
                     executeCheck(
                         name = generateName(name, args),
@@ -91,7 +95,7 @@ data class Check(
         // bash -c 'echo -n $' is zero-based since there's no script. we want everything to be one-based for consistent configuration
         val oneBasedArgs = listOf("bugfound") + argsString.split(" ") //
         val result = executeCommand(command = "echo -n $escapedCommand", args = oneBasedArgs, timeout = Duration.ofSeconds(1))
-        return result.stdOut ?: throw java.lang.IllegalStateException("expected a generated name but none was produced")
+        return result.output ?: throw java.lang.IllegalStateException("expected a generated name but none was produced")
     }
 
     /**
@@ -106,10 +110,10 @@ data class Check(
             args = oneBasedArgs,
             timeout = Duration.ofSeconds(1)
         )
-        check(!result.stdOut.isNullOrBlank())
+        check(!result.output.isNullOrBlank())
         // the above will produce something like "env:test letter:a"
 
-        return result.stdOut.split(" ").associate { Pair(it.substringBefore(":"), it.substringAfter(":")) }
+        return result.output.split(" ").associate { Pair(it.substringBefore(":"), it.substringAfter(":")) }
     }
 
 }
@@ -132,8 +136,7 @@ fun executeCheck(
         name = name,
         tags = tags,
         status = commandResult.status,
-        stdOut = commandResult.stdOut,
-        stdErr = commandResult.stdErr
+        output = commandResult.output
     )
 }
 
@@ -150,43 +153,36 @@ fun executeCommand(
 
     val bashFlag = if (debug) "-cx" else "-c"
 
-    val processBuilder = if (args != null) {
-        ProcessBuilder("/bin/bash", bashFlag, command, *args.toTypedArray())
-    } else {
-        ProcessBuilder("/bin/bash", bashFlag, command)
-    }
+    try {
+        val processExecutor = ProcessExecutor()
+        if (args != null) {
+            processExecutor.command("/bin/bash", bashFlag, command, *args.toTypedArray())
+        } else {
+            processExecutor.command("/bin/bash", bashFlag, command)
+        }
+        val processResult = processExecutor
+            .directory(workingDirectory)
+            .readOutput(true)
+            .redirectError(stdErrLogging)
+            .timeout(timeout.seconds, TimeUnit.SECONDS)
+            .execute()
 
-    processBuilder.redirectErrorStream() // todo is this still needed/useful?
-    processBuilder.directory(workingDirectory)
-    val process = processBuilder.start()
-    process.waitFor(timeout.seconds, TimeUnit.SECONDS)
-
-    val stdOut = if (process.inputStream.available() > 0) {
-        process.inputStream.bufferedReader().use { it.readText() }
-    } else null
-
-    val stdErr = if (process.errorStream.available() > 0) {
-        process.errorStream.bufferedReader().use { it.readText() }
-    } else null
-
-    return try {
-        CommandResult(
-            status = CheckStatus.fromExitCode(process.exitValue()),
-            stdOut = stdOut,
-            stdErr = stdErr
+        return CommandResult(
+            status = CheckStatus.fromExitCode(processResult.exitValue),
+            output = processResult.outputUTF8()
         )
-    } catch (e: IllegalThreadStateException) {
-        CommandResult(
+    } catch (e: TimeoutException) {
+        log.warn { "timeout occured. command: [$command] args: [$args]" }
+        return CommandResult(
             status = CheckStatus.FAIL,
-            stdErr = "timeout executing check"
+            output = "timeout executing check"
         )
     }
 }
 
 data class CommandResult(
     val status: CheckStatus,
-    val stdOut: String? = null,
-    val stdErr: String? = null
+    val output: String? = null
 )
 
 enum class CheckStatus {
@@ -203,8 +199,7 @@ data class CheckResult(
     val name: String,
     val status: CheckStatus,
     val tags: Map<String, String> = mapOf(),
-    val stdOut: String? = null,
-    val stdErr: String? = null
+    val output: String? = null
 )
 
 fun loadChecks(checksDirectory: File): List<Check> {
