@@ -8,7 +8,6 @@ interface OutputWriter {
     fun write(checkResult: CheckResult)
 }
 
-
 fun initializeConfiguredOutputWriters(appConfig: AppConfig): List<OutputWriter> {
 
     // maybe todo use https://github.com/ronmamo/reflections or some other technique to dynamically load writers
@@ -28,4 +27,3 @@ fun initializeConfiguredOutputWriters(appConfig: AppConfig): List<OutputWriter> 
 
     return outputWriters
 }
-
