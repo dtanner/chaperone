@@ -11,6 +11,7 @@ data class AppConfig(
 )
 
 data class Outputs(
+    val log: LogOutputConfig? = null,
     val stdout: StdOutOutputConfig? = null,
     val influxdb: InfluxDbOutputConfig? = null
 )
@@ -18,6 +19,7 @@ data class Outputs(
 sealed class OutputConfig
 
 object StdOutOutputConfig : OutputConfig()
+object LogOutputConfig : OutputConfig()
 
 data class InfluxDbOutputConfig(
     val defaultTags: Map<String, String>? = null,

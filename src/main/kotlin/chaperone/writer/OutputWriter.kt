@@ -16,13 +16,15 @@ fun initializeConfiguredOutputWriters(appConfig: AppConfig): List<OutputWriter> 
     val outputWriters: MutableList<OutputWriter> = mutableListOf()
 
     appConfig.outputs.stdout?.let {
-        val writer = StdOutWriter()
-        outputWriters.add(writer)
+        outputWriters.add(StdOutWriter())
+    }
+
+    appConfig.outputs.log?.let {
+        outputWriters.add(LogWriter())
     }
 
     appConfig.outputs.influxdb?.let { config: InfluxDbOutputConfig ->
-        val writer = InfluxDbWriter(config)
-        outputWriters.add(writer)
+        outputWriters.add(InfluxDbWriter(config))
     }
 
     return outputWriters
