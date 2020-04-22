@@ -7,7 +7,7 @@ import io.kotlintest.shouldBe
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.server.Jetty
+import org.http4k.server.Undertow
 import org.http4k.server.asServer
 import org.junit.jupiter.api.Test
 import java.time.Instant
@@ -30,7 +30,7 @@ class InfluxDbWriterTest {
     @Test
     fun `write test`() {
         val app = { _: Request -> Response(Status.NO_CONTENT) }
-        val server = app.asServer(Jetty(9000)).start()
+        val server = app.asServer(Undertow(9000)).start()
 
         val checkResult = CheckResult(name = "sample check", status = CheckStatus.OK)
         writer.write(checkResult)

@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%date %highlight(%-5level) %logger{25} | %marker %msg %n</pattern>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <message/>
+                <loggerName>
+                    <fieldName>loggerName</fieldName>
+                </loggerName>
+                <nestedField>
+                    <fieldName>thrown</fieldName>
+                    <providers>
+                        <throwableClassName>
+                            <fieldName>name</fieldName>
+                        </throwableClassName>
+                        <stackTrace>
+                            <fieldName>extendedStackTrace</fieldName>
+                            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                                <rootCauseFirst>true</rootCauseFirst>
+                                <maxLength>500</maxLength>
+                            </throwableConverter>
+                        </stackTrace>
+                    </providers>
+                </nestedField>
+                <timestamp>
+                    <fieldName>timeMillis</fieldName>
+                    <pattern>[UNIX_TIMESTAMP_AS_NUMBER]</pattern>
+                </timestamp>
+                <logLevel>
+                    <fieldName>level</fieldName>
+                </logLevel>
+            </providers>
         </encoder>
     </appender>
-
-    <variable name="ROOT_LOG_LEVEL" value="${ROOT_LOG_LEVEL:-INFO}"/>
-    <root level="${ROOT_LOG_LEVEL}">
+    <root level="warn">
         <appender-ref ref="STDOUT"/>
     </root>
+    <logger name="chaperone" level="debug"/>
 </configuration>

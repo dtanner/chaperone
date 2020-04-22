@@ -43,7 +43,6 @@ data class Check(
                 )
                 if (templateResult.status == CheckStatus.FAIL) {
                     val message = "Error executing template. output: ${templateResult.output}"
-                    println(message)
                     log.error { message }
                     return listOf(
                         CheckResult(
@@ -172,7 +171,7 @@ fun executeCommand(
             output = processResult.outputUTF8()
         )
     } catch (e: TimeoutException) {
-        log.warn { "timeout occured. command: [$command] args: [$args]" }
+        log.warn { "timeout occurred. command: [$command] args: [$args]" }
         return CommandResult(
             status = CheckStatus.FAIL,
             output = "timeout executing check"
