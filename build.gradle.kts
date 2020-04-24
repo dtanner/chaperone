@@ -18,9 +18,14 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.3.2")
 
-    implementation("ch.qos.logback:logback-core:1.2.3")
-    implementation("ch.qos.logback:logback-classic:1.2.3")
-    implementation("io.github.microutils:kotlin-logging:1.7.6")
+    val logbackVersion = "1.2.3"
+    implementation("ch.qos.logback:logback-core:$logbackVersion")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("net.logstash.logback:logstash-logback-encoder:6.3") {
+        exclude(group = "com.fasterxml.jackson.core")
+    }
+    implementation("io.github.microutils:kotlin-logging:1.7.8")
+    implementation("org.slf4j:slf4j-api:1.7.30")
 
     // cli parsing
     implementation("com.github.ajalt:clikt:2.4.0")
