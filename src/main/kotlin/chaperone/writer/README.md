@@ -1,10 +1,18 @@
 # Output Writers Implemented So Far
 
-## StdOut
-Writes results to stdout, formatted as:  
-$timestamp $check_name $status $result_stdout $result_stderr  
+## Log
+Logs the results in a couple configurable ways. The options are:
+- *destination*: with possible values of `"stdout"` or `"/a/valid/file/path.log"`
+- *format*: either `"pretty"` or `"logstash"`
+
+The pretty format looks like this:
 ```
-2020-02-17T20:41:04.547812Z      simulated-check-3   OK   simulated pass
+2020-04-25 21:13:45,472 INFO {name=check, tags={env=dev}, status=OK} all is ok
+```
+
+The logstash format looks like this:
+```
+{"@timestamp":"2020-04-25T21:14:42.643-05:00","message":"all is ok","logger":"logwriter","level":"INFO","name":"check","tags":"{env=dev}","status":"OK"}
 ```
 
 ## InfluxDB
