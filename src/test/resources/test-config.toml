@@ -1,5 +1,7 @@
 
-[outputs.stdout]
+[outputs.log]
+destination = "stdout"
+format = "pretty"
 
 [outputs.influxdb]
 db="test"

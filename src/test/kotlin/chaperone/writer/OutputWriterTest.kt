@@ -12,9 +12,9 @@ internal class OutputWriterTest {
             writeText(
                 """
                 [outputs.log]
+                format = "pretty"
+                destination = "stdout"
                 
-                [outputs.stdout]
-
                 [outputs.influxdb]
                 db="metrics"
                 defaultTags={app="my-org-chaperone"}
@@ -26,8 +26,7 @@ internal class OutputWriterTest {
         val appConfig = loadConfig(configFile)
         val outputWriters = initializeConfiguredOutputWriters(appConfig)
 
-        outputWriters.filterIsInstance<LogWriter>().size shouldBe 1
-        outputWriters.filterIsInstance<StdOutWriter>().size shouldBe 1
-        outputWriters.filterIsInstance<InfluxDbWriter>().size shouldBe 1
+        outputWriters.filterIsInstance<LogWriter>().size.shouldBe(1)
+        outputWriters.filterIsInstance<InfluxDbWriter>().size.shouldBe(1)
     }
 }

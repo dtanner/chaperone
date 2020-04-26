@@ -31,7 +31,7 @@ You shove all your checks in a directory, and when the app starts up, it runs th
 Where the results of your checks go. A checks result consists of its status (OK or FAIL), and any output from the command. 
 Each destination is configured in a global config file as an optional table. e.g.:
 ```toml
-[outputs.stdout]
+[outputs.log]
 
 [outputs.influxdb]
 db="metrics"
