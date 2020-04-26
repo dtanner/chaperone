@@ -3,6 +3,7 @@ package chaperone.writer
 import chaperone.AppConfig
 import chaperone.CheckResult
 import chaperone.InfluxDbOutputConfig
+import chaperone.LogOutputConfig
 
 interface OutputWriter {
     fun write(checkResult: CheckResult)
@@ -15,12 +16,8 @@ fun initializeConfiguredOutputWriters(appConfig: AppConfig): List<OutputWriter> 
 
     val outputWriters: MutableList<OutputWriter> = mutableListOf()
 
-    appConfig.outputs.stdout?.let {
-        outputWriters.add(StdOutWriter())
-    }
-
-    appConfig.outputs.log?.let {
-        outputWriters.add(LogWriter())
+    appConfig.outputs.log?.let { config: LogOutputConfig ->
+        outputWriters.add(LogWriter(config))
     }
 
     appConfig.outputs.influxdb?.let { config: InfluxDbOutputConfig ->

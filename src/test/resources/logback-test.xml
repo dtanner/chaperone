@@ -1,0 +1,18 @@
+<configuration debug="true">
+
+    <appender name="HUMAN_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date %highlight(%-5level) %logger{25} - %marker %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <variable name="ROOT_LOG_LEVEL" value="${ROOT_LOG_LEVEL:-INFO}"/>
+    <variable name="APP_LOG_LEVEL" value="${APP_LOG_LEVEL:-DEBUG}"/>
+
+    <logger name="chaperone" level="${APP_LOG_LEVEL}"/>
+
+    <root level="${ROOT_LOG_LEVEL}">
+        <appender-ref ref="HUMAN_STDOUT"/>
+    </root>
+
+</configuration>

@@ -1,5 +1,6 @@
 package chaperone
 
+import chaperone.writer.OutputFormat
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.toml
 import com.uchuhimo.konf.toValue
@@ -12,14 +13,15 @@ data class AppConfig(
 
 data class Outputs(
     val log: LogOutputConfig? = null,
-    val stdout: StdOutOutputConfig? = null,
     val influxdb: InfluxDbOutputConfig? = null
 )
 
 sealed class OutputConfig
 
-object StdOutOutputConfig : OutputConfig()
-object LogOutputConfig : OutputConfig()
+data class LogOutputConfig(
+    val destination: String = "stdout",
+    val format: OutputFormat = OutputFormat.pretty
+) : OutputConfig()
 
 data class InfluxDbOutputConfig(
     val defaultTags: Map<String, String>? = null,
@@ -39,7 +41,8 @@ fun loadConfig(configFile: File): AppConfig {
         .from.toml.file(configFile)
         .toValue<AppConfig>()
 
-    // todo figure out how to merge `.from.env` into this properly. for now WE'LL DO IT LIVE
+    // todo figure out how to merge `.from.env` into this properly.
+    // to fix ^, we need to not use camelCase naming or use the Config object. see https://github.com/uchuhimo/konf/issues/51
     val env = System.getenv()
     appConfig.outputs.influxdb?.let { influxDbOutputConfig ->
         env["CHAPERONE_OUTPUTS_INFLUXDB_DB"]?.let { influxDbOutputConfig.db = it }

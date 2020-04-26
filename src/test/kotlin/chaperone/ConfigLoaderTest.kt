@@ -12,7 +12,7 @@ class ConfigLoaderTest {
         val tomlSampleFile = File(javaClass.getResource("/test-config.toml").toURI())
         val config = loadConfig(tomlSampleFile)
 
-        config.outputs.stdout.shouldNotBeNull()
+        config.outputs.log.shouldNotBeNull()
 
         val influxConfig = config.outputs.influxdb
         influxConfig.shouldNotBeNull()
