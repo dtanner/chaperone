@@ -32,11 +32,17 @@ Where the results of your checks go. A checks result consists of its status (OK 
 Each destination is configured in a global config file as an optional table. e.g.:
 ```toml
 [outputs.log]
+destination="stdout" # options are stdout or a file path. defaults to stdout
+format="logstash" # options are pretty or logstash. defaults to pretty
 
 [outputs.influxdb]
 db="metrics"
-defaultTags={app="myapp-chaperone"} # optional tags applied to all your checks
+defaultTags={app="myproject-chaperone",env="dev"} # optional tags applied to all your checks
 uri="http://localhost:8086"
+
+[outputs.slack]
+webhook="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
+onlyWriteFailures=true # in case you only want to get a slack message when failures happen
 ```  
 
 [More details](./src/main/kotlin/chaperone/writer/README.md)

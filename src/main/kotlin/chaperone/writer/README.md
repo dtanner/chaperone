@@ -39,3 +39,6 @@ Having a fill of null lets you pessimisticly alert on missing values in case the
 
 Default tags and any check-specific tags become columns in InfluxDB, so you can slice and dice different charts based on those.  
 e.g. typical default tags are application and environment name.
+
+## Slack
+Writes to the slack API. Requires a slack webhook configured for a channel.
