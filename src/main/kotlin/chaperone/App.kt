@@ -46,7 +46,13 @@ class App : CliktCommand() {
                         while (true) {
                             val results = check.execute(checksDirFile)
                             results.forEach { result ->
-                                outputWriters.forEach { it.write(result) }
+                                outputWriters.forEach {
+                                    try {
+                                        it.write(result)
+                                    } catch (e: Exception) {
+                                        log.error(e) { "Exception writing result" }
+                                    }
+                                }
                             }
                             delay(check.interval.toMillis())
                         }

@@ -1,10 +1,13 @@
 
 [outputs.log]
-destination = "stdout" # options are stdout or a file path. defaults to stdout
-format = "logstash" # options are pretty or logstash. defaults to pretty
+destination="stdout" # options are stdout or a file path. defaults to stdout
+format="logstash" # options are pretty or logstash. defaults to pretty
 
 [outputs.influxdb]
 db="metrics"
 defaultTags={app="myapp-chaperone"}
 uri="http://localhost:8086"
 
+[outputs.slack]
+webhook="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
+onlyWriteFailures=true
