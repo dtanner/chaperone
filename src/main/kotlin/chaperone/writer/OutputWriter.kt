@@ -4,6 +4,7 @@ import chaperone.AppConfig
 import chaperone.CheckResult
 import chaperone.InfluxDbOutputConfig
 import chaperone.LogOutputConfig
+import chaperone.SlackOutputConfig
 
 interface OutputWriter {
     fun write(checkResult: CheckResult)
@@ -22,6 +23,10 @@ fun initializeConfiguredOutputWriters(appConfig: AppConfig): List<OutputWriter> 
 
     appConfig.outputs.influxdb?.let { config: InfluxDbOutputConfig ->
         outputWriters.add(InfluxDbWriter(config))
+    }
+
+    appConfig.outputs.slack?.let { config: SlackOutputConfig ->
+        outputWriters.add(SlackWriter(config))
     }
 
     return outputWriters

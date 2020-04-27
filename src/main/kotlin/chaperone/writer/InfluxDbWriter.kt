@@ -30,6 +30,8 @@ class InfluxDbWriter(private val config: InfluxDbOutputConfig) : OutputWriter {
     }
 
     override fun write(checkResult: CheckResult) {
+        if (config.onlyWriteFailures && checkResult.status != CheckStatus.FAIL) return
+
         val tags = (config.defaultTags ?: emptyMap()).plus(checkResult.tags).plus(Pair("check", checkResult.name)).toSortedMap()
 
         // maybe todo batch write?

@@ -25,11 +25,13 @@ enum class OutputFormat {
     logstash
 }
 
-class LogWriter(config: LogOutputConfig) : OutputWriter {
+class LogWriter(private val config: LogOutputConfig) : OutputWriter {
 
     private val log: Logger = configureLogger(config)
 
     override fun write(checkResult: CheckResult) {
+        if (config.onlyWriteFailures && checkResult.status != CheckStatus.FAIL) return
+
         checkResult.apply {
             val logMap = mapOf(
                 "name" to name,
@@ -73,7 +75,7 @@ class LogWriter(config: LogOutputConfig) : OutputWriter {
             }
         }
 
-        val appender : Appender<ILoggingEvent> = when(config.destination) {
+        val appender: Appender<ILoggingEvent> = when (config.destination) {
             "stdout" -> {
                 val consoleAppender = ConsoleAppender<ILoggingEvent>().apply {
                     context = loggerContext

@@ -13,26 +13,33 @@ data class AppConfig(
 
 data class Outputs(
     val log: LogOutputConfig? = null,
-    val influxdb: InfluxDbOutputConfig? = null
+    val influxdb: InfluxDbOutputConfig? = null,
+    val slack: SlackOutputConfig? = null
 )
 
 sealed class OutputConfig
 
 data class LogOutputConfig(
     val destination: String = "stdout",
-    val format: OutputFormat = OutputFormat.pretty
+    val format: OutputFormat = OutputFormat.pretty,
+    val onlyWriteFailures: Boolean = false
 ) : OutputConfig()
 
 data class InfluxDbOutputConfig(
     val defaultTags: Map<String, String>? = null,
     var db: String,
-    var uri: String
+    var uri: String,
+    val onlyWriteFailures: Boolean = false
 ) : OutputConfig() {
     override fun toString(): String {
         return "db: $db, uri: $uri, defaultTags: $defaultTags"
     }
 }
 
+data class SlackOutputConfig(
+    val webhook: String,
+    val onlyWriteFailures: Boolean = false
+)
 
 fun loadConfig(configFile: File): AppConfig {
     check(configFile.exists()) { "Error: configured configFile wasn't found. [${configFile.path}]" }
