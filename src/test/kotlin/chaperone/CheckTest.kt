@@ -99,6 +99,25 @@ class CheckTest {
     }
 
     @Test
+    fun `templated check error should stop processing`() {
+
+        val check = Check(
+            name = "template check - $1",
+            description = "template example",
+            interval = Duration.ofMinutes(1),
+            timeout = Duration.ofSeconds(5),
+            template = "false",
+            tags = mapOf("env" to "test", "letter" to "$1"),
+            command = "echo -n $1"
+        )
+
+        val results = check.execute(File("."))
+
+        results.size.shouldBe(1)
+        results.first().status.shouldBe(CheckStatus.FAIL)
+    }
+
+    @Test
     fun `templated check multiple command arg example`() {
 
         val check = Check(
