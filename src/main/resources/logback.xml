@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
-                <maxDepthPerThrowable>20</maxDepthPerThrowable>
-                <maxLength>2048</maxLength>
-                <shortenedClassNameLength>1024</shortenedClassNameLength>
-            </throwableConverter>
-            <fieldNames>
-                <thread>[ignore]</thread>
-                <logger>logger</logger>
-                <version>[ignore]</version>
-                <levelValue>[ignore]</levelValue>
-            </fieldNames>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <message/>
+                <loggerName>
+                    <fieldName>loggerName</fieldName>
+                </loggerName>
+                <nestedField>
+                    <fieldName>thrown</fieldName>
+                    <providers>
+                        <throwableClassName>
+                            <fieldName>name</fieldName>
+                        </throwableClassName>
+                        <stackTrace>
+                            <fieldName>extendedStackTrace</fieldName>
+                            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                                <rootCauseFirst>true</rootCauseFirst>
+                                <maxLength>50</maxLength>
+                            </throwableConverter>
+                        </stackTrace>
+                    </providers>
+                </nestedField>
+                <timestamp>
+                    <fieldName>timeMillis</fieldName>
+                    <pattern>[UNIX_TIMESTAMP_AS_NUMBER]</pattern>
+                </timestamp>
+                <logLevel>
+                    <fieldName>level</fieldName>
+                </logLevel>
+            </providers>
         </encoder>
     </appender>
     <root level="warn">

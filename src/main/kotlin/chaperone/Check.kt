@@ -30,11 +30,11 @@ data class Check(
     val tags: Tags = mapOf()
 ) {
     fun execute(workingDirectory: File): List<CheckResult> {
-        log.debug { "$name: Executing $command" }
         return try {
 
             if (template != null) {
                 check(name.contains("$")) { "When a template is used, name must also be templated." }
+                log.debug { "Executing template command: $template" }
 
                 val templateResult = executeCommand(
                     workingDirectory = workingDirectory,
@@ -128,6 +128,8 @@ fun executeCheck(
     timeout: Duration,
     debug: Boolean
 ): CheckResult {
+
+    log.debug { "$name: executing command: $command"}
 
     val commandResult = executeCommand(workingDirectory = workingDirectory, command = command, timeout = timeout, debug = debug)
 
