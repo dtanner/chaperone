@@ -46,7 +46,7 @@ data class Check(
                     log.error { message }
                     return listOf(
                         CheckResult(
-                            name = name,
+                            name = template,
                             status = CheckStatus.FAIL,
                             output = templateResult.output
                         )

@@ -102,11 +102,11 @@ class CheckTest {
     fun `templated check error should stop processing`() {
 
         val check = Check(
+            template = "template errror test",
             name = "template check - $1",
             description = "template example",
             interval = Duration.ofMinutes(1),
             timeout = Duration.ofSeconds(5),
-            template = "false",
             tags = mapOf("env" to "test", "letter" to "$1"),
             command = "echo -n $1"
         )
@@ -114,6 +114,7 @@ class CheckTest {
         val results = check.execute(File("."))
 
         results.size.shouldBe(1)
+        results.first().name.shouldBe("template errror test")
         results.first().status.shouldBe(CheckStatus.FAIL)
     }
 
