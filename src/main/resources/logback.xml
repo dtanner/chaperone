@@ -17,7 +17,7 @@
                             <fieldName>extendedStackTrace</fieldName>
                             <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                                 <rootCauseFirst>true</rootCauseFirst>
-                                <maxLength>50</maxLength>
+                                <maxLength>500</maxLength>
                             </throwableConverter>
                         </stackTrace>
                     </providers>

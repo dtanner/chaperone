@@ -60,7 +60,7 @@ class LogWriter(private val config: LogOutputConfig) : OutputWriter {
             OutputFormat.logstash -> {
                 LogstashEncoder().apply {
                     throwableConverter = ShortenedThrowableConverter().apply {
-                        maxDepthPerThrowable = 20
+                        maxDepthPerThrowable = 30
                         maxLength = 2048
                         shortenedClassNameLength = 100
                     }
