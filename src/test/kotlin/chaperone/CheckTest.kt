@@ -12,6 +12,7 @@ class CheckTest {
     @Test
     fun `success no output`() {
         val check = Check(
+            fileDirectory = File("."),
             name = "always succeeds",
             description = "should always be ok",
             command = "true",
@@ -19,7 +20,7 @@ class CheckTest {
             timeout = Duration.ofSeconds(30)
         )
 
-        val results = check.execute(File("."))
+        val results = check.execute()
         results[0].status.shouldBe(CheckStatus.OK)
         results[0].output.shouldBeEmpty()
     }
@@ -27,6 +28,7 @@ class CheckTest {
     @Test
     fun `success with output`() {
         val check = Check(
+            fileDirectory = File("."),
             name = "always succeeds",
             description = "should always be ok",
             command = "echo -n 'foo'",
@@ -34,7 +36,7 @@ class CheckTest {
             timeout = Duration.ofSeconds(30)
         )
 
-        val results = check.execute(File("."))
+        val results = check.execute()
         results[0].status.shouldBe(CheckStatus.OK)
         results[0].output.shouldBe("foo")
     }
@@ -42,6 +44,7 @@ class CheckTest {
     @Test
     fun `should fail`() {
         val check = Check(
+            fileDirectory = File("."),
             name = "fail",
             description = "should fail",
             command = "false",
@@ -49,7 +52,7 @@ class CheckTest {
             timeout = Duration.ofSeconds(30)
         )
 
-        val results = check.execute(File("."))
+        val results = check.execute()
         results[0].status.shouldBe(CheckStatus.FAIL)
         results[0].output.shouldBeEmpty()
     }
@@ -57,6 +60,7 @@ class CheckTest {
     @Test
     fun `should timeout`() {
         val check = Check(
+            fileDirectory = File("src/test/resources"),
             name = "timeout",
             description = "should timeout",
             command = "./hang.sh",
@@ -64,7 +68,7 @@ class CheckTest {
             timeout = Duration.ofSeconds(1)
         )
 
-        val results = check.execute(File("src/test/resources"))
+        val results = check.execute()
         results[0].status.shouldBe(CheckStatus.FAIL)
         results[0].output.shouldBe("timeout executing check")
     }
@@ -73,6 +77,7 @@ class CheckTest {
     fun `templated check single command arg example`() {
 
         val check = Check(
+            fileDirectory = File("."),
             name = "template check - $1",
             description = "template example",
             interval = Duration.ofMinutes(1),
@@ -82,7 +87,7 @@ class CheckTest {
             command = "echo -n $1"
         )
 
-        val results = check.execute(File("."))
+        val results = check.execute()
 
         results.size.shouldBe(2)
         results.all { it.status == CheckStatus.OK }.shouldBeTrue()
@@ -102,6 +107,7 @@ class CheckTest {
     fun `templated check error should stop processing`() {
 
         val check = Check(
+            fileDirectory = File("."),
             template = "template errror test",
             name = "template check - $1",
             description = "template example",
@@ -111,7 +117,7 @@ class CheckTest {
             command = "echo -n $1"
         )
 
-        val results = check.execute(File("."))
+        val results = check.execute()
 
         results.size.shouldBe(1)
         results.first().name.shouldBe("template errror test")
@@ -122,6 +128,7 @@ class CheckTest {
     fun `templated check multiple command arg example`() {
 
         val check = Check(
+            fileDirectory = File("."),
             name = "template - $2",
             description = "template example",
             interval = Duration.ofMinutes(1),
@@ -131,7 +138,7 @@ class CheckTest {
             command = "echo -n $@"
         )
 
-        val results = check.execute(File("."))
+        val results = check.execute()
 
         results.size.shouldBe(2)
         results.all { it.status == CheckStatus.OK }.shouldBeTrue()

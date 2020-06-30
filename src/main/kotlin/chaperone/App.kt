@@ -44,7 +44,7 @@ class App : CliktCommand() {
                 checks.forEach { check ->
                     launch {
                         while (true) {
-                            val results = check.execute(checksDirFile)
+                            val results = check.execute()
                             results.forEach { result ->
                                 outputWriters.forEach {
                                     try {

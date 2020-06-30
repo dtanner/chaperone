@@ -1,9 +1,6 @@
 package chaperone
 
 import chaperone.json.objectMapper
-import com.uchuhimo.konf.Config
-import com.uchuhimo.konf.source.toml
-import com.uchuhimo.konf.toValue
 import mu.KotlinLogging
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.stream.slf4j.Slf4jStream
@@ -19,6 +16,7 @@ private val stdErrLogging = Slf4jStream.of(log).asInfo()
 typealias Tags = Map<String, String>
 
 data class Check(
+    val fileDirectory: File? = null, // set when the check is loaded at runtime
     val name: String,
     val debug: Boolean = false,
     val description: String? = null,
@@ -29,15 +27,16 @@ data class Check(
     val timeout: Duration,
     val tags: Tags = mapOf()
 ) {
-    fun execute(workingDirectory: File): List<CheckResult> {
+    fun execute(): List<CheckResult> {
         return try {
+            requireNotNull(fileDirectory)
 
             if (template != null) {
                 check(name.contains("$")) { "When a template is used, name must also be templated." }
                 log.debug { "Executing template command: $template" }
 
                 val templateResult = executeCommand(
-                    workingDirectory = workingDirectory,
+                    workingDirectory = fileDirectory,
                     command = template,
                     timeout = timeout
                 )
@@ -58,7 +57,7 @@ data class Check(
                 return commandArgs.map { args ->
                     executeCheck(
                         name = generateName(name, args),
-                        workingDirectory = workingDirectory,
+                        workingDirectory = fileDirectory,
                         command = "$command $args",
                         timeout = timeout,
                         tags = generateTags(tags, args),
@@ -69,7 +68,7 @@ data class Check(
                 return listOf(
                     executeCheck(
                         name = name,
-                        workingDirectory = workingDirectory,
+                        workingDirectory = fileDirectory,
                         command = command,
                         timeout = timeout,
                         tags = tags,
@@ -129,7 +128,7 @@ fun executeCheck(
     debug: Boolean
 ): CheckResult {
 
-    log.debug { "$name: executing command: $command"}
+    log.debug { "$name: executing command: $command" }
 
     val commandResult = executeCommand(workingDirectory = workingDirectory, command = command, timeout = timeout, debug = debug)
 

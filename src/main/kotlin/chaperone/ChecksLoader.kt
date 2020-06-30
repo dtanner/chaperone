@@ -13,7 +13,8 @@ fun loadChecks(checksDirectory: File): List<Check> {
     checksDirectory.walkTopDown().forEach {
         if (it.isFile && it.name.endsWith(suffix = "toml", ignoreCase = true)) {
             // todo if it becomes an issue - validate this toml file is indeed a check and not just a toml file used by the check
-            checks.add(Config().from.toml.file(it).toValue())
+            val check: Check = Config().from.toml.file(it).toValue()
+            checks.add(check.copy(fileDirectory = it.parentFile) )
         }
     }
     return checks

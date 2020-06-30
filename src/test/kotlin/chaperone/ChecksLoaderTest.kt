@@ -13,6 +13,7 @@ class ChecksLoaderTest {
         checks.size.shouldBe(2)
         checks.find { it.name == "sample-dev" }.shouldBe(
             Check(
+                fileDirectory = checksDir,
                 name = "sample-dev",
                 description = "sample dev check",
                 command = "true",
@@ -23,6 +24,7 @@ class ChecksLoaderTest {
         )
         checks.find { it.name == "sample-check-2" }.shouldBe(
             Check(
+                fileDirectory = File(javaClass.getResource("/test-checks.d/checksubdir").toURI()),
                 name = "sample-check-2",
                 description = "sample check 2",
                 debug = true,
