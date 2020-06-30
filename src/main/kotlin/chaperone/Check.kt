@@ -202,16 +202,3 @@ data class CheckResult(
     val tags: Map<String, String> = mapOf(),
     val output: String? = null
 )
-
-fun loadChecks(checksDirectory: File): List<Check> {
-    check(checksDirectory.isDirectory) { "Error: checksDirectory wasn't found. [${checksDirectory.path}]" }
-    checksDirectory.listFiles() ?: throw IllegalStateException("checks directory is empty. ${checksDirectory.path}")
-
-    val checks: MutableList<Check> = mutableListOf()
-    checksDirectory.walkTopDown().forEach {
-        if (it.isFile) {
-            checks.add(Config().from.toml.file(it).toValue())
-        }
-    }
-    return checks
-}

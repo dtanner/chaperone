@@ -29,7 +29,7 @@ You shove all your checks in a directory, and when the app starts up, it runs th
 
 ## Outputs
 Where the results of your checks go. A checks result consists of its status (OK or FAIL), and any output from the command. 
-Each destination is configured in a global config file as an optional table. e.g.:
+Each destination is configured in the global config file. e.g.:
 ```toml
 [outputs.log]
 destination="stdout" # options are stdout or a file path. defaults to stdout
@@ -59,6 +59,18 @@ Take that example, then replace its checks with whatever you want to do.
 This makes it easier to test your command locally in a terminal, then copy/paste the command into a check config when it's ready.
 - The `checks.d` directory can contain subdirectories of files. e.g. `/checks.d/http/test-a.toml`, or `/checks.d/stage/test-a.toml`.
 You may find it easier to manage your checks if they're organized by feature/type/environment etc...
+You can also put non-check files in your checks directory. This is a good way to organize lots of checks that use lots of files as part of their actions.
+With this technique, you can easily add and remove everything related to a check in a single directory.
+e.g.:
+```
+checks.d/
+    check-a/
+        scripta1.sh
+        scripta2
+    check-b/
+        scriptb.sh
+    etc...
+```
 
 # Template Checks
 In simple mode, you call a single script, and it returns a single result.  
