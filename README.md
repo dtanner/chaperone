@@ -5,7 +5,7 @@ Chaperone is a simple yet powerful monitoring application, intended to be deploy
 - Scheduled execution of arbitrary checks. Execute commands directly in a check, or call out to your own custom commands.
 - Simple configuration using TOML files. 
 - Basic checks are super easy, and dynamic template-driven checks are barely an inconvenience.
-- Configurable output destinations for your check results, starting with stdout and InfluxDB.
+- Configurable output destinations for your check results, for example stdout, InfluxDB, and Slack.
 
 # Main Concepts
 ## Check
