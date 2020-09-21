@@ -6,6 +6,8 @@ You can use the files in `example-usage` as an example. e.g. if your repo code l
 ### Build chaperone docker image locally
 Caveat: this is slow, so only do this for final functional testing of a docker image.
 e.g. If you want to test changes by bringing up the example-usage docker-compose file.  
-`docker build -t edgescope/chaperone:latest .`
-`cd example-usage`
-`docker-compose up --build`
+```script
+docker build -t edgescope/chaperone:latest .
+cd example-usage
+docker-compose up --build
+```
