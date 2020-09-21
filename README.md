@@ -77,4 +77,4 @@ In simple mode, you call a single script, and it returns a single result.
 If you want to run multiple checks driven by a template, see [Template Checks](./docs/template-checks.md).
 
 # Contributions
-The app is written in kotlin, and uses the standard kotlin code format. Questions, comments, and pull requests welcome.
+The app is written in kotlin, and uses the standard kotlin code format. Questions, comments, and pull requests welcome. See [Development.md](Development.md) for some docs on developing locally.
