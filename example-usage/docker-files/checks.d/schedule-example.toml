@@ -1,0 +1,5 @@
+name = "schedule example"
+description = "basic example showing how to use a cron schedule for the check"
+command = "ls | head -n 1"
+schedule = "* * * * *"
+timeout = "5s"

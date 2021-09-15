@@ -13,10 +13,11 @@ import org.http4k.server.asServer
 import org.junit.jupiter.api.Test
 
 class SlackWriterTest {
+    private val port = 19000
 
     private val writer = SlackWriter(
         SlackOutputConfig(
-            webhook = "http://localhost:9000",
+            webhook = "http://localhost:$port",
             onlyWriteFailures = true
         )
     )
@@ -41,7 +42,7 @@ class SlackWriterTest {
     fun `validate the request made to slack`() {
         val app = RecordingServer()
 
-        val server = app.asServer(Undertow(9000)).start()
+        val server = app.asServer(Undertow(port)).start()
         writer.write(failResult)
         server.stop()
 

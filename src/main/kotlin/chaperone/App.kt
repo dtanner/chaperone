@@ -10,12 +10,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import org.http4k.core.Body
-import org.http4k.core.ContentType
-import org.http4k.core.Method
-import org.http4k.core.Response
+import org.http4k.core.*
 import org.http4k.core.Status.Companion.OK
-import org.http4k.core.with
 import org.http4k.lens.string
 import org.http4k.routing.bind
 import org.http4k.routing.routes
@@ -44,6 +40,11 @@ class App : CliktCommand() {
                 checks.forEach { check ->
                     launch {
                         while (true) {
+                            // for scheduled checks, delay before each execution
+                            check.schedule?.run {
+                                delay(check.millisToNextScheduledExecution())
+                            }
+
                             val results = check.execute()
                             results.forEach { result ->
                                 outputWriters.forEach {
@@ -54,7 +55,11 @@ class App : CliktCommand() {
                                     }
                                 }
                             }
-                            delay(check.interval.toMillis())
+
+                            // for interval checks, delay after each execution
+                            check.interval?.run {
+                                delay(this.toMillis())
+                            }
                         }
                     }
                 }
