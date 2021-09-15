@@ -1,12 +1,15 @@
 package chaperone
 
 import io.kotlintest.matchers.boolean.shouldBeTrue
+import io.kotlintest.matchers.shouldBeInRange
 import io.kotlintest.matchers.string.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.time.Duration
+import java.time.LocalDateTime
 
 class CheckTest {
     @Test
@@ -151,7 +154,7 @@ class CheckTest {
         val bOutput = results.find { it.name == "template - b" }
         bOutput.shouldNotBeNull()
         bOutput.output?.shouldBe("x b")
-        bOutput.tags.shouldBe(mapOf("env" to "test", "mode" to "x",  "letter" to "b"))
+        bOutput.tags.shouldBe(mapOf("env" to "test", "mode" to "x", "letter" to "b"))
     }
 
     @Test
@@ -175,6 +178,52 @@ class CheckTest {
         val result = executeCommand(command = "echo a", debug = true)
         result.status.shouldBe(CheckStatus.OK)
         result.output.shouldBe("a\n")
+    }
+
+    @Test
+    fun `either interval or schedule must be defined`() {
+        shouldThrow<IllegalStateException> {
+            Check(
+                name = "check",
+                command = "true",
+                timeout = Duration.ofSeconds(30)
+            )
+        }
+    }
+
+    @Test
+    fun `interval and schedule cannot both be defined`() {
+        shouldThrow<IllegalStateException> {
+            Check(
+                name = "check",
+                command = "true",
+                schedule = "* * * * *",
+                interval = Duration.ofMinutes(1),
+                timeout = Duration.ofSeconds(30)
+            )
+        }
+    }
+
+    @Test
+    fun `millisToNextScheduledExecution when schedule is every minute`() {
+        val check = Check(
+            name = "check",
+            command = "true",
+            schedule = "* * * * *",
+            timeout = Duration.ofSeconds(30)
+        )
+
+        // the current clock's second hand. i.e. a value from 0 through 59
+        val currentTimeSeconds = LocalDateTime.now().second
+
+        // the schedule is configured to run every minute, so its value should be the number of milliseconds until the next minute.
+        val millisToNextMinute = (60L - currentTimeSeconds) * 1000
+
+        // allow some imprecision. known reasons:
+        // the currentTimeSeconds might have been almost to the next second, which could reduce the wait time up to a second
+        // the cron library we're using might not be super precise, but i think that's ok given cron is uses minute precision
+        // we're preventing double-executions in this function, so the millis could be up to a second longer
+        check.millisToNextScheduledExecution().shouldBeInRange((millisToNextMinute - 500)..(millisToNextMinute + 1000))
     }
 
 }

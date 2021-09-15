@@ -1,6 +1,6 @@
 name = "sample-check-2"
 description = "sample check 2"
 command = "true"
-interval = "10s"
+schedule = "* * * * *"
 timeout = "30s"
 debug = true
