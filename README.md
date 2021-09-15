@@ -83,7 +83,7 @@ You can configure each check to run on an `interval` or a `schedule`. You must c
 By setting an `interval` in your check configuration, it will immediately run when chaperone is started, and then 
 run every XT interval after that, where X is the interval value and T is the time unit of measure. 
 The time unit of measurement can be one of `s` (seconds), `m` (minutes), `h` (hours), or even `d` (days).
-For example, `interval=10m` will run the check every 10 minutes.
+For example, `interval = "10m"` will run the check every 10 minutes.
 
 ### Schedule
 If you configure your check with a `schedule`, then 
@@ -96,7 +96,7 @@ The syntax is a string containing 5 fields, where each field represents in this 
 - day of week
 
 For example, to run every day, five minutes after midnight:
-`schedule="5 0 * * *"`
+`schedule = "5 0 * * *"`
 
 *Limitation*: It doesn't support special string values like "@hourly" or "@daily". It should support everything 
 else though, like wildcards (`*`), ranges (`2,4`), lists (`1-5`), and step values (`*/2`).
