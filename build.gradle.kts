@@ -38,6 +38,9 @@ dependencies {
         exclude(module = "konf-yaml")
     }
 
+    // cron scheduling
+    implementation("com.cronutils:cron-utils:9.1.5")
+
     // api
     val http4kVersion = "3.244.0"
     implementation("org.http4k:http4k-core:$http4kVersion")

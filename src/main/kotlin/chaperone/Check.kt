@@ -1,17 +1,23 @@
 package chaperone
 
 import chaperone.json.objectMapper
+import com.cronutils.model.CronType
+import com.cronutils.model.definition.CronDefinitionBuilder
+import com.cronutils.model.time.ExecutionTime
+import com.cronutils.parser.CronParser
 import mu.KotlinLogging
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.stream.slf4j.Slf4jStream
 import java.io.File
 import java.time.Duration
+import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 
 private val log = KotlinLogging.logger {}
 private val stdErrLogging = Slf4jStream.of(log).asInfo()
+private val cronParser = CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX))
 
 typealias Tags = Map<String, String>
 
@@ -23,10 +29,20 @@ data class Check(
     val template: String? = null,
     val templateOutputSeparator: String = System.lineSeparator(),
     val command: String,
-    val interval: Duration,
+    val interval: Duration? = null,
+    val schedule: String? = null,
     val timeout: Duration,
     val tags: Tags = mapOf()
 ) {
+    init {
+        check(interval != null || schedule != null) { "Either interval or schedule must be defined for check named $name" }
+        check(!(interval != null && schedule != null)) { "You cannot define both interval and schedule for the same check named $name" }
+
+        schedule?.apply {
+            CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX)).parse(this).validate()
+        }
+    }
+
     fun execute(): List<CheckResult> {
         return try {
             requireNotNull(fileDirectory)
@@ -114,6 +130,13 @@ data class Check(
         return result.output.split(" ").associate { Pair(it.substringBefore(":"), it.substringAfter(":")) }
     }
 
+    fun millisToNextScheduledExecution(): Long {
+        check(schedule != null)
+        val executionTime = ExecutionTime.forCron(cronParser.parse(schedule))
+        // adding a second to prevent fast-running checks from executing multiple times for the same schedule point
+        // if this is problematic, we can add some state and ensure we don't repeat check times using nextExecution()
+        return executionTime.timeToNextExecution(ZonedDateTime.now()).get().plusSeconds(1).toMillis()
+    }
 }
 
 /**

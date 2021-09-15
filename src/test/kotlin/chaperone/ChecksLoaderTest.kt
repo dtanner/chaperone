@@ -1,3 +1,5 @@
+@file:Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package chaperone
 
 import io.kotlintest.shouldBe
@@ -29,7 +31,8 @@ class ChecksLoaderTest {
                 description = "sample check 2",
                 debug = true,
                 command = "true",
-                interval = Duration.ofSeconds(10),
+                interval = null,
+                schedule = "* * * * *",
                 timeout = Duration.ofSeconds(30)
             )
         )

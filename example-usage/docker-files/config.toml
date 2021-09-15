@@ -1,7 +1,7 @@
 
 [outputs.log]
 destination="stdout" # options are stdout or a file path. defaults to stdout
-format="logstash" # options are pretty or logstash. defaults to pretty
+format="pretty" # options are pretty or logstash. defaults to pretty
 
 [outputs.influxdb]
 db="metrics"

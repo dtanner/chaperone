@@ -14,7 +14,7 @@ Each check is a TOML file that looks like this:
 name = "basic example"
 description = "basic example showing how to run a command/script"
 command = "ls | head -n 1" # the command exit code is used to determine status. 0 = OK, anything else = FAIL
-interval = "1m"
+interval = "1m" # the command will run every minute. alternatively, you can configure a cron schedule.
 timeout = "5s"
 tags = {env="dev"} # optional - tags let you categorize the output in tools like InfluxDB/Grafana
 debug = true # optional - defaults to false. If set to true, this logs the commands as they're run.
@@ -48,7 +48,7 @@ onlyWriteFailures=true # in case you only want to get a slack message when failu
 [More details](./src/main/kotlin/chaperone/writer/README.md)
 
 ## Docker
-The base image uses debian-slim. I originally used alpine-slim, but I was spending more time figuring out how to add dependencies than I was writing checks.
+The base image uses debian-slim. 
 
 # Example Usage
 See the [example usage](example-usage/README.md) directory for an example project, with some sample checks and output configuration. 
@@ -75,6 +75,31 @@ checks.d/
 # Template Checks
 In simple mode, you call a single script, and it returns a single result.  
 If you want to run multiple checks driven by a template, see [Template Checks](./docs/template-checks.md).
+
+# Interval and Schedule Configuration
+You can configure each check to run on an `interval` or a `schedule`. You must choose one, and you can't choose both.
+
+### Interval
+By setting an `interval` in your check configuration, it will immediately run when chaperone is started, and then 
+run every XT interval after that, where X is the interval value and T is the time unit of measure. 
+The time unit of measurement can be one of `s` (seconds), `m` (minutes), `h` (hours), or even `d` (days).
+For example, `interval=10m` will run the check every 10 minutes.
+
+### Schedule
+If you configure your check with a `schedule`, then 
+[UNIX crontab Convention](https://www.unix.com/man-page/linux/5/crontab/) is supported.
+The syntax is a string containing 5 fields, where each field represents in this order:
+- minute
+- hour
+- day of month
+- month
+- day of week
+
+For example, to run every day, five minutes after midnight:
+`schedule="5 0 * * *"`
+
+*Limitation*: It doesn't support special string values like "@hourly" or "@daily". It should support everything 
+else though, like wildcards (`*`), ranges (`2,4`), lists (`1-5`), and step values (`*/2`).
 
 # Contributions
 The app is written in kotlin, and uses the standard kotlin code format. Questions, comments, and pull requests welcome. See [Development.md](Development.md) for some docs on developing locally.
