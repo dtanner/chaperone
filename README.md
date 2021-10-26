@@ -2,7 +2,7 @@
 Chaperone is a simple yet powerful monitoring application, intended to be deployed as a docker container.
 
 # Features
-- Scheduled execution of arbitrary checks. Execute commands directly in a check, or call out to your own scripts.
+- Periodic execution of arbitrary checks. Execute commands directly in a check, or call out to your own scripts.
 - Simple configuration using TOML files. 
 - Basic checks are super easy, and dynamic template-driven checks are barely an inconvenience.
 - Configurable output destinations for your check results, for example stdout, InfluxDB, and Slack.
