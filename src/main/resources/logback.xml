@@ -32,8 +32,11 @@
             </providers>
         </encoder>
     </appender>
-    <root level="warn">
+    <variable name="ROOT_LOG_LEVEL" value="${ROOT_LOG_LEVEL:-INFO}"/>
+    <variable name="CHAPERONE_LOG_LEVEL" value="${CHAPERONE_LOG_LEVEL:-INFO}"/>
+    <logger name="chaperone" level="${APP_LOG_LEVEL}"/>
+    <root level="${ROOT_LOG_LEVEL}">
         <appender-ref ref="STDOUT"/>
     </root>
-    <logger name="chaperone" level="debug"/>
+    <logger name="chaperone" level="${CHAPERONE_LOG_LEVEL}"/>
 </configuration>

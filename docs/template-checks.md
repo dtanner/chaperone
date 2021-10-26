@@ -1,9 +1,10 @@
 # Template Checks
-This is a more advanced usage of Chaperone, so if you're just starting out, make sure you understand the basic usage scenarios first.  
+This is a slightly more advanced usage of Chaperone, but is very common and useful for collections of similar checks.
+If you're just starting out, make sure you understand the basic usage scenarios first.  
 
 # Usage Scenario
 Let's say we have a bunch of apps running on our servers, and we want to periodically check that they're all up.  
-The apps that are running isn't a constant; it grows and shrinks as teams bring new apps up, and retire old apps.  
+The apps that are running isn't a constant; it grows and shrinks as teams bring new apps up and retire old apps.  
 We have a script named `list-apps.sh` that when called, returns a list of the currently deployed app names like this:  
 ```
 arbalest
@@ -19,19 +20,19 @@ Let's create `app-health.toml` to do this...
 description = "team X's application health check status"
 template = "../scripts/list-apps.sh"
 name = "app - $1"
-command = "../scripts/get-app-health.sh $1"
-interval = "5m"
+command = "../scripts/get-app-health.sh"
+interval = "10m"
 timeout = "10s"
-tags = {env="prod", app="$1"}
+tags = {category="appcheck", env="prod", app="$1"}
 ```
 
 Now every five minutes, chaperone will call `list-apps.sh`, and for each app returned, will execute `get-app-health.sh` for that app. 
 stdout might look like this:  
 
 ```
-2020-02-21T01:20:02.531372Z      app - arbalest          OK   {env=prod,app=arbalest}     app is healthy
-2020-02-21T01:20:02.532529Z      app - thorn             OK   {env=prod,app=thorn}        app is healthy
-2020-02-21T01:20:02.532529Z      app - apostate          FAIL {env=prod,app=apostate}     app failed health check
+2020-02-21T01:20:02.531372Z      app - arbalest          OK   {category=appcheck,env=prod,app=arbalest}     app is healthy
+2020-02-21T01:20:02.532529Z      app - thorn             OK   {category=appcheck,env=prod,app=thorn}        app is healthy
+2020-02-21T01:20:02.532529Z      app - apostate          FAIL {category=appcheck,env=prod,app=apostate}     app failed health check
 ```
 
 # How Does it Work?

@@ -101,5 +101,13 @@ For example, to run every day, five minutes after midnight:
 *Limitation*: It doesn't support special string values like "@hourly" or "@daily". It should support everything 
 else though, like wildcards (`*`), ranges (`2,4`), lists (`1-5`), and step values (`*/2`).
 
+# Script writing process and debugging
+As mentioned earlier, get your scripts running first by testing them via command line, and _then_ configure your 
+check TOML. If a check isn't behaving as expected, you have a couple debugging options:
+1. In an individual check's TOML config, you can set `debug = true`. Doing this sets the bash `x` flag when calling 
+the script, causing it to output variable values as the script is being evaluated.
+2. You can also set the `CHAPERONE_LOG_LEVEL` environment variable to a value of `DEBUG`, which will output more 
+information to the log destination as each check is called.  
+
 # Contributions
 The app is written in kotlin, and uses the standard kotlin code format. Questions, comments, and pull requests welcome. See [Development.md](Development.md) for some docs on developing locally.
