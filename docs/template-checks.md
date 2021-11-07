@@ -21,7 +21,7 @@ description = "team X's application health check status"
 template = "list-apps.sh"
 name = "app - $1"
 command = "get-app-health.sh"
-interval = "10m"
+interval = "5m"
 timeout = "10s"
 tags = {category="appcheck", env="prod", app="$1"}
 ```
