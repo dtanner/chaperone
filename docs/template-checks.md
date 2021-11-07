@@ -18,9 +18,9 @@ Let's create `app-health.toml` to do this...
 
 ```toml
 description = "team X's application health check status"
-template = "../scripts/list-apps.sh"
+template = "list-apps.sh"
 name = "app - $1"
-command = "../scripts/get-app-health.sh"
+command = "get-app-health.sh"
 interval = "10m"
 timeout = "10s"
 tags = {category="appcheck", env="prod", app="$1"}
