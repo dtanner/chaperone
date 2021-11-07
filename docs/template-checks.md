@@ -32,7 +32,7 @@ stdout might look like this:
 ```
 2020-02-21T01:20:02.531372Z      app - arbalest          OK   {category=appcheck,env=prod,app=arbalest}     app is healthy
 2020-02-21T01:20:02.532529Z      app - thorn             OK   {category=appcheck,env=prod,app=thorn}        app is healthy
-2020-02-21T01:20:02.532529Z      app - messenger         FAIL {category=appcheck,env=prod,app=messenger}   app failed health check
+2020-02-21T01:20:02.532529Z      app - messenger         FAIL {category=appcheck,env=prod,app=messenger}    app failed health check
 ```
 
 # How Does it Work?
