@@ -8,6 +8,7 @@ db="metrics"
 defaultTags={app="myapp-chaperone"}
 uri="http://localhost:8086"
 
-[outputs.slack]
-webhook="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
-onlyWriteFailures=true
+# examples showing slack integration that only writes failures
+#[outputs.slack]
+#webhook="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
+#onlyWriteFailures=true

@@ -3,13 +3,15 @@
 description = "example showing how to run a templated multi-check command"
 
 # the template is a command that when run will pass its outputs to the "command" property.
-# in this example, its output will be 3 lines each containing a letter. each line will be passed to the command and create a separate check result
+# in this example, its output will be 3 lines each containing a letter.
+# each line will be passed to the command and create a separate check result
 template = "for letter in a b c; do echo $letter; done"
 
 # when using a template, the name property uses the information produced by the template.
 # for each check created by the template, the name can access the input as bash positional arguments.
 # in this example, we're adding the first argument from the template output to the name of the command.
-# note that if you use a template, you must reference at least one template arg so that your generated checks are uniquely named.
+# note that if you use a template, you must reference at least one template arg so that your generated
+# checks are uniquely named.
 name = "template example - $1"
 
 # the command in a template configuration receives the output from the template,
