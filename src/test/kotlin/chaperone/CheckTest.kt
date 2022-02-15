@@ -1,11 +1,11 @@
 package chaperone
 
-import io.kotlintest.matchers.boolean.shouldBeTrue
-import io.kotlintest.matchers.shouldBeInRange
-import io.kotlintest.matchers.string.shouldBeEmpty
-import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.longs.shouldBeInRange
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldBeEmpty
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.time.Duration

@@ -5,10 +5,10 @@ import chaperone.CheckStatus
 import chaperone.LogOutputConfig
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.kotlintest.matchers.file.shouldBeAFile
-import io.kotlintest.matchers.file.shouldBeEmpty
-import io.kotlintest.matchers.file.shouldNotBeEmpty
-import io.kotlintest.shouldBe
+import io.kotest.matchers.file.shouldBeAFile
+import io.kotest.matchers.file.shouldBeEmpty
+import io.kotest.matchers.file.shouldNotBeEmpty
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.io.File
 

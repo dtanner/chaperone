@@ -3,7 +3,7 @@ package chaperone.writer
 import chaperone.CheckResult
 import chaperone.CheckStatus
 import chaperone.SlackOutputConfig
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import org.http4k.core.HttpHandler
 import org.http4k.core.Request
 import org.http4k.core.Response

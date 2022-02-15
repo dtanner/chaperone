@@ -1,7 +1,7 @@
 package chaperone.writer
 
 import chaperone.loadConfig
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.io.File
 

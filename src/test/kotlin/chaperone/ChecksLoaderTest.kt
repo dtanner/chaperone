@@ -2,7 +2,7 @@
 
 package chaperone
 
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.time.Duration
