@@ -25,3 +25,4 @@ services:
     environment:
       # you can override most chaperone configuration values through environment variables. just use the "CHAPERONE_" prefix.
       - CHAPERONE_OUTPUTS_INFLUXDB_URI=http://influxdb:8086
+
