@@ -1,7 +1,11 @@
+version: "2.4"
+
 services:
   influxdb:
     image: influxdb:1.5
     container_name: chaperone_influxdb
+    networks:
+      - app
     ports:
       - "8083:8083"
       - "8086:8086"
@@ -10,8 +14,8 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: chaperone_grafana
-    links:
-      - influxdb
+    networks:
+      - app
     ports:
       - "3000:3000"
     environment:
@@ -20,9 +24,13 @@ services:
 
   chaperone:
     build: .
-    links:
+    networks:
+      - app
+    depends_on:
       - influxdb
     environment:
       # you can override most chaperone configuration values through environment variables. just use the "CHAPERONE_" prefix.
       - CHAPERONE_OUTPUTS_INFLUXDB_URI=http://influxdb:8086
 
+networks:
+  app:
