@@ -8,7 +8,6 @@ Caveat: this is slow, so only do this for final functional testing of a docker i
 e.g. If you want to test changes by bringing up the example-usage docker-compose file.  
 ```script
 # Make sure you're in the project root directory
-docker build -t edgescope/chaperone:latest .
 cd example-usage
 docker-compose up --build
 ```

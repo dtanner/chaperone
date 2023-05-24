@@ -1,11 +1,11 @@
 # Chaperone
-Chaperone is a simple yet powerful monitoring application, intended to be deployed as a docker container.
+Chaperone is a monitoring application intended to be deployed as a docker container.
 
 # Features
-- Periodic execution of arbitrary checks. Execute commands directly in a check, or call out to your own scripts.
+- Execution of arbitrary checks configured with cron or interval (e.g. `30s`, `5m` `8h`) syntax. 
+- Execute commands directly in a check, or call out to your own scripts.
 - Simple configuration using TOML files. 
-- Basic checks are super easy, and dynamic template-driven checks are barely an inconvenience.
-- Configurable output destinations for your check results, for example stdout, InfluxDB, and Slack.
+- Configurable output destinations for check results. e.g. stdout, InfluxDB, and Slack.
 
 # Main Concepts
 ## Check
@@ -15,7 +15,7 @@ name = "basic example"
 description = "basic example showing how to run a command/script"
 command = "ls | head -n 1" # the command exit code is used to determine status. 0 = OK, anything else = FAIL
 interval = "1m" # the command will run every minute. alternatively, you can configure a cron schedule.
-timeout = "5s"
+timeout = "5s" # the maximum amount of time the check can run before being canceled/failed
 tags = {env="dev"} # optional - tags let you categorize the output in tools like InfluxDB/Grafana
 debug = true # optional - defaults to false. If set to true, this logs the commands as they're run.
 ```
@@ -23,8 +23,7 @@ The command just needs to be executable, so the sky's the limit.  Add any apps o
 call them. Like bash, curl, and jq? You're already covered. Prefer Python or Kotlin Script? Just add them to your 
 docker container and call them instead.
 
-You might not even need to call a script file.  For example, if you just want to check that an HTTP call returns a 200 
-status code, try this:  
+You might not even need to call a script file.  For example, if you want a basic HTTP health check, try this:  
 `command = '''[[ $(curl -sL -w '%{http_code}' -o /dev/null 'https://httpbin.org/status/200') == "200" ]]'''`  
 *For those unfamiliar with curl and bash, this makes an HTTP call and validates that the response code was 200.*  
 *For those new to TOML, the triple-ticks indicate a literal string, which lets us use single and double quotes in 
@@ -53,7 +52,7 @@ onlyWriteFailures=true # in case you want to get a slack message when failures h
 [More details on output writers](./src/main/kotlin/chaperone/writer/README.md)
 
 ## Docker
-The base image uses debian-slim.
+The base image uses Ubuntu
 
 # Example Usage
 See the [example usage](example-usage/README.md) directory for an example project, with some sample checks and output configuration. 
@@ -77,7 +76,7 @@ checks.d/
 ```
 
 # Template Checks
-In simple mode, you call a single script, and it returns a single result.  That's fine for really simple stuff, but 
+In simple mode, you call a single script, and it returns a single result.  That's fine for simple stuff, but 
 you'll want to read up on template checks to create multiple related checks.[Template Checks](./docs/template-checks.md).
 
 # Interval and Schedule Configuration

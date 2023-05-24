@@ -4,7 +4,7 @@ The compose file includes both influxdb and grafana, along with a sample dashboa
 It uses the [Statusmap plugin](https://grafana.com/grafana/plugins/flant-statusmap-panel), which is installed via the docker-compose configuration.
 
 ### Initial local setup instructions
-1. Run the apps: `docker-compose up`
+1. Build the customized Docker image and run the apps: `docker-compose up --build`
 2. After seeing some logs from the influx and grafana containers starting up, you should see chaperone execute some sample checks every minute like this:  
 ```
 chaperone_1  | 2020-02-17 20:41:04,291 INFO  c.writer.InfluxDbWriter |  influxdb config: db: metrics, uri: http://influxdb:8086, defaultTags: {app=myapp-chaperone}
