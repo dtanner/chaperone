@@ -69,7 +69,10 @@ onlyWriteFailures=true # in case you want to get a slack message when failures h
 [More details on output writers](./src/main/kotlin/chaperone/writer/README.md)
 
 ## Docker
-The base image uses Ubuntu
+The base image uses ubuntu. We publish the `latest` tag with each release, but don't recommend you use it.
+Please use a specific version and stay updated with the latest stable release. This gives you 
+version control, and eliminates instability and debugging issues that could arise from
+unknown changes. The `latest` tag should only be used for testing.
 
 # Example Usage
 See the [example usage](example-usage/README.md) directory for an example project, with some sample checks and output configuration. 
