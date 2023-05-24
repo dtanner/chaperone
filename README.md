@@ -1,3 +1,20 @@
+<!-- TOC -->
+* [Chaperone](#chaperone)
+* [Features](#features)
+* [Main Concepts](#main-concepts)
+  * [Check](#check)
+  * [Outputs](#outputs)
+  * [Docker](#docker)
+* [Example Usage](#example-usage)
+* [Tips](#tips)
+* [Template Checks](#template-checks)
+* [Interval and Schedule Configuration](#interval-and-schedule-configuration)
+    * [Interval](#interval)
+    * [Schedule](#schedule)
+* [Script writing process and debugging](#script-writing-process-and-debugging)
+* [Contributions](#contributions)
+<!-- TOC -->
+
 # Chaperone
 Chaperone is a monitoring application intended to be deployed as a docker container.
 
