@@ -27,7 +27,7 @@ jobs:
       - name: Build image
         run: >
           docker build
-          --tag "edgescope/chaperone:${GITHUB_REF}"
+          --tag "edgescope/chaperone:${GITHUB_REF_NAME}"
           .
 
       - name: Log into registry
