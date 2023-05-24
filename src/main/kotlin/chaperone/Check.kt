@@ -1,6 +1,7 @@
 package chaperone
 
 import chaperone.json.objectMapper
+import chaperone.writer.OutputWriter
 import com.cronutils.model.CronType
 import com.cronutils.model.definition.CronDefinitionBuilder
 import com.cronutils.model.time.ExecutionTime
@@ -43,7 +44,7 @@ data class Check(
         }
     }
 
-    fun execute(): List<CheckResult> {
+    fun execute(outputWriters: List<OutputWriter> = emptyList()): List<CheckResult> {
         return try {
             requireNotNull(fileDirectory)
 
@@ -77,7 +78,8 @@ data class Check(
                         command = "$command $args",
                         timeout = timeout,
                         tags = generateTags(tags, args),
-                        debug = debug
+                        debug = debug,
+                        outputWriters = outputWriters,
                     )
                 }
             } else {
@@ -88,7 +90,8 @@ data class Check(
                         command = command,
                         timeout = timeout,
                         tags = tags,
-                        debug = debug
+                        debug = debug,
+                        outputWriters = outputWriters,
                     )
                 )
             }
@@ -148,19 +151,29 @@ fun executeCheck(
     workingDirectory: File,
     command: String,
     timeout: Duration,
-    debug: Boolean
+    debug: Boolean,
+    outputWriters: List<OutputWriter>,
 ): CheckResult {
 
     log.debug { "$name: executing command: $command" }
 
     val commandResult = executeCommand(workingDirectory = workingDirectory, command = command, timeout = timeout, debug = debug)
-
-    return CheckResult(
+    val checkResult = CheckResult(
         name = name,
         tags = tags,
         status = commandResult.status,
         output = commandResult.output
     )
+
+    outputWriters.forEach {
+        try {
+            it.write(checkResult)
+        } catch (e: Exception) {
+            log.error(e) { "Exception writing result" }
+        }
+    }
+
+    return checkResult
 }
 
 /**

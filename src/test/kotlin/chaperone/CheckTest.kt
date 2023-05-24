@@ -1,5 +1,6 @@
 package chaperone
 
+import chaperone.writer.OutputWriter
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.longs.shouldBeInRange
@@ -226,4 +227,26 @@ class CheckTest {
         check.millisToNextScheduledExecution().shouldBeInRange((millisToNextMinute - 500)..(millisToNextMinute + 1000))
     }
 
+    @Test
+    fun `executeCheck should write to the outputWriters`() {
+        val check = Check(
+            fileDirectory = File("."),
+            name = "always succeeds",
+            description = "should always be ok",
+            command = "true",
+            interval = Duration.ofMinutes(1),
+            timeout = Duration.ofSeconds(30)
+        )
+
+        var hasOutputBeenWritten = false
+        val outputWriter = object : OutputWriter {
+            override fun write(checkResult: CheckResult) {
+                hasOutputBeenWritten = true
+            }
+        }
+
+        val results = check.execute(listOf(outputWriter))
+        results[0].status.shouldBe(CheckStatus.OK)
+        hasOutputBeenWritten.shouldBeTrue()
+    }
 }

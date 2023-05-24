@@ -45,16 +45,7 @@ class App : CliktCommand() {
                                 delay(check.millisToNextScheduledExecution())
                             }
 
-                            val results = check.execute()
-                            results.forEach { result ->
-                                outputWriters.forEach {
-                                    try {
-                                        it.write(result)
-                                    } catch (e: Exception) {
-                                        log.error(e) { "Exception writing result" }
-                                    }
-                                }
-                            }
+                            check.execute(outputWriters)
 
                             // for interval checks, delay after each execution
                             check.interval?.run {
@@ -66,7 +57,6 @@ class App : CliktCommand() {
             }
             job.join()
         }
-
     }
 
     private fun startApiServer(checks: List<Check>, port: Int) {
@@ -90,5 +80,3 @@ class App : CliktCommand() {
 }
 
 fun main(args: Array<String>) = App().main(args)
-
-
