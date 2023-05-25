@@ -2,7 +2,7 @@ package chaperone.writer
 
 import chaperone.CheckResult
 import chaperone.CheckStatus
-import chaperone.InfluxDbOutputConfig
+import chaperone.InfluxDbWriterConfig
 import mu.KotlinLogging
 import okhttp3.OkHttpClient
 import org.http4k.client.OkHttp
@@ -13,7 +13,7 @@ import java.time.Instant
 
 private val log = KotlinLogging.logger {}
 
-class InfluxDbWriter(private val config: InfluxDbOutputConfig) : OutputWriter {
+class InfluxDbWriter(private val config: InfluxDbWriterConfig) : OutputWriter {
 
     private val client = OkHttp(OkHttpClient())
 

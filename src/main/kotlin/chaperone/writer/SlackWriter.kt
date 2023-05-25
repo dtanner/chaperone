@@ -3,7 +3,7 @@ package chaperone.writer
 import chaperone.CheckResult
 import chaperone.CheckStatus.FAIL
 import chaperone.CheckStatus.OK
-import chaperone.SlackOutputConfig
+import chaperone.SlackWriterConfig
 import chaperone.json.objectMapper
 import mu.KotlinLogging
 import okhttp3.OkHttpClient
@@ -11,7 +11,7 @@ import org.http4k.client.OkHttp
 import org.http4k.core.Method
 import org.http4k.core.Request
 
-class SlackWriter(private val config: SlackOutputConfig) : OutputWriter {
+class SlackWriter(private val config: SlackWriterConfig) : OutputWriter {
 
     private val log = KotlinLogging.logger {}
     private val client = OkHttp(OkHttpClient())

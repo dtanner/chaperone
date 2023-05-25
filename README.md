@@ -63,10 +63,16 @@ uri="http://localhost:8086"
 
 [outputs.slack]
 webhook="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
-onlyWriteFailures=true # in case you want to get a slack message when failures happen
+onlyWriteFailures=true # optional - defaults to false. useful when you only want message for check failures
+
+[outputs.command]
+workingDirectory="/usr/local/bin" # required - the working directory to run the command from
+command="./my-custom-command.sh" # required - command
+onlyWriteFailures=true # optional - defaults to false. 
+
 ```  
 
-[More details on output writers](./src/main/kotlin/chaperone/writer/README.md)
+See the [docs on output writers](./src/main/kotlin/chaperone/writer/README.md) for more details.
 
 ## Docker
 The base image uses ubuntu. We publish the `latest` tag with each release, but don't recommend you use it.
