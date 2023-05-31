@@ -22,9 +22,6 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: distTar
-      
-      - name: list tar
-        run: ls -al build/distributions/
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
