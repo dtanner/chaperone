@@ -33,6 +33,9 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+      - name: echo env
+        run: env
+
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
