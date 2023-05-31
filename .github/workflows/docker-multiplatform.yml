@@ -23,9 +23,6 @@ jobs:
         with:
           arguments: distTar
 
-      - name: Extract TAR
-        run: tar xf build/distributions/chaperone.tar --directory=build/distributions
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -41,6 +38,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
+          context: .
           platforms: linux/amd64,linux/arm64
           #push: true
           tags: |
