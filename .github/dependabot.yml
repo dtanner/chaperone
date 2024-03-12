@@ -1,0 +1,32 @@
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "gradle" 
+    directory: "/"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "thursday"
+      time: "00:00"
+      timezone: "America/Chicago"
+    groups:
+      pipeline:
+        patterns:
+          - "*"
+    allow:
+      - dependency-type: "direct"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "thursday"
+      time: "00:00"
+      timezone: "America/Chicago"
+    allow:
+      - dependency-type: "direct"
