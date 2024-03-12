@@ -2,7 +2,7 @@ package chaperone.writer
 
 import chaperone.CheckResult
 import chaperone.CheckStatus
-import chaperone.InfluxDbOutputConfig
+import chaperone.InfluxDbWriterConfig
 import io.kotest.matchers.shouldBe
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -14,7 +14,7 @@ import java.time.Instant
 
 class InfluxDbWriterTest {
 
-    private val writer = InfluxDbWriter(config = InfluxDbOutputConfig(db = "a", uri = "http://localhost:9000"))
+    private val writer = InfluxDbWriter(config = InfluxDbWriterConfig(db = "a", uri = "http://localhost:9000"))
 
     @Test
     fun `generate line`() {

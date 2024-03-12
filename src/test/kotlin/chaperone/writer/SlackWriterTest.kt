@@ -2,7 +2,7 @@ package chaperone.writer
 
 import chaperone.CheckResult
 import chaperone.CheckStatus
-import chaperone.SlackOutputConfig
+import chaperone.SlackWriterConfig
 import io.kotest.matchers.shouldBe
 import org.http4k.core.HttpHandler
 import org.http4k.core.Request
@@ -16,7 +16,7 @@ class SlackWriterTest {
     private val port = 19000
 
     private val writer = SlackWriter(
-        SlackOutputConfig(
+        SlackWriterConfig(
             webhook = "http://localhost:$port",
             onlyWriteFailures = true
         )

@@ -1,0 +1,28 @@
+{
+  "$id": "https://chaperone/command-writer-schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Person",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The check name."
+    },
+    "status": {
+      "type": "string",
+      "description": "The status of the check.",
+      "enumeration": ["OK", "FAIL"]
+    },
+    "tags": {
+      "description": "Tags associated with the check",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "output": {
+      "type": "string",
+      "description": "Output written to stdout by the check"
+    }
+  }
+}

@@ -1,4 +1,9 @@
-# Output Writers Implemented So Far
+<!-- TOC -->
+  * [Log](#log)
+  * [InfluxDB](#influxdb)
+  * [Slack](#slack)
+  * [Command](#command)
+<!-- TOC -->
 
 ## Log
 Logs the results in a couple configurable ways. The options are:
@@ -42,3 +47,20 @@ e.g. typical default tags are application and environment name.
 
 ## Slack
 Writes to the slack API. Requires a slack webhook configured for a channel.
+
+## Command
+The command writer lets you configure a command that is called with the output of each check. This enables you to customize the result processing.
+[A JSON representation of the check result](https://github.com/dtanner/chaperone/blob/main/docs/command-writer-schema.json) is passed as an argument to the command.
+
+For an example configuraton:
+```toml
+[outputs.command]
+workingDirectory="/usr/local/bin"
+command="./output-listener.sh"
+```
+
+It would be called like the following:
+```shell
+cd /usr/local/bin
+./output-listener.sh '{"name":"template example - a","status":"OK","tags":{"letter":"a","env":"test"},"output":"a"}'
+```

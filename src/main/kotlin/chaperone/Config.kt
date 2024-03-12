@@ -12,33 +12,38 @@ data class AppConfig(
 )
 
 data class Outputs(
-    val log: LogOutputConfig? = null,
-    val influxdb: InfluxDbOutputConfig? = null,
-    val slack: SlackOutputConfig? = null
+    val log: LogWriterConfig? = null,
+    val influxdb: InfluxDbWriterConfig? = null,
+    val slack: SlackWriterConfig? = null,
+    val command: CommandWriterConfig? = null,
 )
 
-sealed class OutputConfig
-
-data class LogOutputConfig(
+data class LogWriterConfig(
     val destination: String = "stdout",
     val format: OutputFormat = OutputFormat.pretty,
     val onlyWriteFailures: Boolean = false
-) : OutputConfig()
+)
 
-data class InfluxDbOutputConfig(
+data class InfluxDbWriterConfig(
     val defaultTags: Map<String, String>? = null,
     var db: String,
     var uri: String,
     val onlyWriteFailures: Boolean = false
-) : OutputConfig() {
+) {
     override fun toString(): String {
         return "db: $db, uri: $uri, defaultTags: $defaultTags"
     }
 }
 
-data class SlackOutputConfig(
+data class SlackWriterConfig(
     val webhook: String,
     val onlyWriteFailures: Boolean = false
+)
+
+data class CommandWriterConfig(
+    val workingDirectory: String = ".",
+    val command: String,
+    val onlyWriteFailures: Boolean = false,
 )
 
 fun loadConfig(configFile: File): AppConfig {

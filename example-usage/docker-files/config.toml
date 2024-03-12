@@ -12,3 +12,8 @@ uri="http://localhost:8086"
 #[outputs.slack]
 #webhook="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
 #onlyWriteFailures=true
+
+[outputs.command]
+workingDirectory="/chaperone" # required - the working directory to run the command from
+command="./output-listener.sh" # required - the name of the command.
+onlyWriteFailures=false

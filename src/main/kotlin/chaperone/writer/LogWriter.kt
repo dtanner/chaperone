@@ -11,7 +11,7 @@ import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import chaperone.CheckResult
 import chaperone.CheckStatus
-import chaperone.LogOutputConfig
+import chaperone.LogWriterConfig
 import net.logstash.logback.encoder.LogstashEncoder
 import net.logstash.logback.fieldnames.LogstashFieldNames
 import net.logstash.logback.marker.Markers.appendEntries
@@ -25,7 +25,7 @@ enum class OutputFormat {
     logstash
 }
 
-class LogWriter(private val config: LogOutputConfig) : OutputWriter {
+class LogWriter(private val config: LogWriterConfig) : OutputWriter {
 
     private val log: Logger = configureLogger(config)
 
@@ -46,7 +46,7 @@ class LogWriter(private val config: LogOutputConfig) : OutputWriter {
         }
     }
 
-    private fun configureLogger(config: LogOutputConfig): Logger {
+    private fun configureLogger(config: LogWriterConfig): Logger {
         val loggerContext = LoggerFactory.getILoggerFactory() as LoggerContext
 
         val messageEncoder = when (config.format) {

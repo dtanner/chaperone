@@ -2,7 +2,7 @@ package chaperone.writer
 
 import chaperone.CheckResult
 import chaperone.CheckStatus
-import chaperone.LogOutputConfig
+import chaperone.LogWriterConfig
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.matchers.file.shouldBeAFile
@@ -23,7 +23,7 @@ class LogWriterTest {
 
     @Test
     fun `pretty stdout`() {
-        val logWriter = LogWriter(LogOutputConfig(destination = "stdout", format = OutputFormat.pretty))
+        val logWriter = LogWriter(LogWriterConfig(destination = "stdout", format = OutputFormat.pretty))
         // this is a weak test. so far just used for visually examining the output when the test is run
         logWriter.write(okResult)
     }
@@ -32,7 +32,7 @@ class LogWriterTest {
     fun `logstash file`() {
         val file = File("/tmp/logstashfile.log")
         file.delete()
-        val logWriter = LogWriter(LogOutputConfig(destination = file.absolutePath, format = OutputFormat.logstash))
+        val logWriter = LogWriter(LogWriterConfig(destination = file.absolutePath, format = OutputFormat.logstash))
         logWriter.write(okResult)
         file.shouldBeAFile()
         val line = file.readText()
@@ -49,7 +49,7 @@ class LogWriterTest {
     fun `only write errors`() {
         val file = File("/tmp/onlywriteerrors.log")
         file.delete()
-        val logWriter = LogWriter(LogOutputConfig(
+        val logWriter = LogWriter(LogWriterConfig(
             destination = file.absolutePath,
             format = OutputFormat.logstash,
             onlyWriteFailures = true
