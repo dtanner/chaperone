@@ -37,7 +37,7 @@ dependencies {
     implementation("com.uchuhimo:konf-toml:1.1.2")
 
     // cron scheduling
-    implementation("com.cronutils:cron-utils:9.1.6")
+    implementation("com.cronutils:cron-utils:9.2.1")
 
     // api
     val http4kVersion = "4.44.0.0"
