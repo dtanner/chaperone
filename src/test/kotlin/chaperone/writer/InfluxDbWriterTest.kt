@@ -14,7 +14,8 @@ import java.time.Instant
 
 class InfluxDbWriterTest {
 
-    private val writer = InfluxDbWriter(config = InfluxDbWriterConfig(db = "a", uri = "http://localhost:9000"))
+    private val httpServerPort = 9000
+    private val writer = InfluxDbWriter(config = InfluxDbWriterConfig(db = "a", uri = "http://localhost:$httpServerPort"))
 
     @Test
     fun `generate line`() {
@@ -30,7 +31,7 @@ class InfluxDbWriterTest {
     @Test
     fun `write test`() {
         val app = { _: Request -> Response(Status.NO_CONTENT) }
-        val server = app.asServer(Undertow(9000)).start()
+        val server = app.asServer(Undertow(httpServerPort)).start()
 
         val checkResult = CheckResult(name = "sample check", status = CheckStatus.OK)
         writer.write(checkResult)
