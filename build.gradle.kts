@@ -55,7 +55,7 @@ dependencies {
     api("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion")
 
     testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
     testImplementation("io.kotest:kotest-assertions-core:5.6.2")
 }
