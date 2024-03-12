@@ -21,7 +21,7 @@ application {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.8.0")
 
     implementation("ch.qos.logback:logback-classic:1.2.10")
     implementation("net.logstash.logback:logstash-logback-encoder:7.0.1") {
