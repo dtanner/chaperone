@@ -40,7 +40,7 @@ dependencies {
     implementation("com.cronutils:cron-utils:9.2.1")
 
     // api
-    val http4kVersion = "5.14.0.0"
+    val http4kVersion = "5.14.4.0"
     implementation("org.http4k:http4k-core:$http4kVersion")
     implementation("org.http4k:http4k-server-undertow:$http4kVersion")
     implementation("org.http4k:http4k-client-okhttp:$http4kVersion")
