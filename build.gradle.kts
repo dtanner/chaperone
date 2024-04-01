@@ -48,7 +48,7 @@ dependencies {
     // command execution management
     implementation("org.zeroturnaround:zt-exec:1.12")
 
-    val jacksonVersion = "2.16.2"
+    val jacksonVersion = "2.17.0"
     api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     api("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
