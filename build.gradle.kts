@@ -23,7 +23,7 @@ application {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.8.0")
 
-    implementation("ch.qos.logback:logback-classic:1.4.14")
+    implementation("ch.qos.logback:logback-classic:1.5.6")
     implementation("net.logstash.logback:logstash-logback-encoder:7.4") {
         exclude(group = "com.fasterxml.jackson.core")
     }
