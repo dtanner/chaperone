@@ -31,7 +31,7 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.9")
 
     // cli parsing
-    implementation("com.github.ajalt.clikt:clikt:4.2.2")
+    implementation("com.github.ajalt.clikt:clikt:4.4.0")
 
     // config
     implementation("com.uchuhimo:konf-toml:1.1.2")
