@@ -29,8 +29,9 @@ services:
     depends_on:
       - influxdb
     environment:
-      # you can override most chaperone configuration values through environment variables. just use the "CHAPERONE_" prefix.
-      - CHAPERONE_OUTPUTS_INFLUXDB_URI=http://influxdb:8086
+      # you can override any chaperone configuration value through environment variables.
+      # use the "CHAPERONE_" prefix, with "__" separating config path segments. see the README for details.
+      - CHAPERONE_OUTPUTS__INFLUXDB__URI=http://influxdb:8086
 
 networks:
   app:

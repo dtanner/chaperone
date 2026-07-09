@@ -4,6 +4,7 @@ package chaperone
 
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.time.Duration
 
@@ -36,5 +37,21 @@ class ChecksLoaderTest {
                 timeout = Duration.ofSeconds(30)
             )
         )
+    }
+
+    @Test
+    fun `interval supports all documented time units`(@TempDir tempDir: File) {
+        File(tempDir, "day-check.toml").writeText(
+            """
+            name = "day-check"
+            command = "true"
+            interval = "1d"
+            timeout = "500ms"
+            """.trimIndent()
+        )
+
+        val check = loadChecks(tempDir).single()
+        check.interval.shouldBe(Duration.ofDays(1))
+        check.timeout.shouldBe(Duration.ofMillis(500))
     }
 }

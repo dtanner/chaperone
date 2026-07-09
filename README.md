@@ -74,6 +74,20 @@ onlyWriteFailures=true # optional - defaults to false.
 
 See the [docs on output writers](./src/main/kotlin/chaperone/writer/README.md) for more details.
 
+### Environment Variable Overrides
+Any value in the config file can be overridden with a `CHAPERONE_`-prefixed environment variable.
+Use a double underscore (`__`) to separate config path segments, and a single underscore (`_`) to separate
+words within a camelCase field name. This is especially useful for values you don't want baked into your
+image, like the Slack webhook. For example:
+```shell
+CHAPERONE_OUTPUTS__INFLUXDB__URI=http://influxdb:8086   # overrides outputs.influxdb.uri
+CHAPERONE_OUTPUTS__SLACK__WEBHOOK=https://hooks.slack.com/services/...   # overrides outputs.slack.webhook
+CHAPERONE_OUTPUTS__LOG__ONLY_WRITE_FAILURES=true        # overrides outputs.log.onlyWriteFailures
+CHAPERONE_API_SERVER_PORT=9090                          # overrides apiServerPort
+```
+For backwards compatibility, the legacy `CHAPERONE_OUTPUTS_INFLUXDB_DB` and `CHAPERONE_OUTPUTS_INFLUXDB_URI`
+single-underscore forms are still supported.
+
 ## Docker
 The base image uses ubuntu. We publish the `latest` tag with each release, but don't recommend you use it.
 Please use a specific version and stay updated with the latest stable release. This gives you 

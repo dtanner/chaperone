@@ -1,9 +1,9 @@
 package chaperone
 
 import chaperone.writer.OutputFormat
-import com.uchuhimo.konf.Config
-import com.uchuhimo.konf.source.toml
-import com.uchuhimo.konf.toValue
+import com.sksamuel.hoplite.ConfigLoaderBuilder
+import com.sksamuel.hoplite.addFileSource
+import com.sksamuel.hoplite.sources.EnvironmentVariablesPropertySource
 import java.io.File
 
 data class AppConfig(
@@ -26,8 +26,8 @@ data class LogWriterConfig(
 
 data class InfluxDbWriterConfig(
     val defaultTags: Map<String, String>? = null,
-    var db: String,
-    var uri: String,
+    val db: String,
+    val uri: String,
     val onlyWriteFailures: Boolean = false
 ) {
     override fun toString(): String {
@@ -46,20 +46,37 @@ data class CommandWriterConfig(
     val onlyWriteFailures: Boolean = false,
 )
 
-fun loadConfig(configFile: File): AppConfig {
+private const val ENV_PREFIX = "CHAPERONE_"
+
+// pre-hoplite versions supported these two overrides with single-underscore separators. keep them working.
+private val legacyEnvAliases = mapOf(
+    "CHAPERONE_OUTPUTS_INFLUXDB_DB" to "CHAPERONE_OUTPUTS__INFLUXDB__DB",
+    "CHAPERONE_OUTPUTS_INFLUXDB_URI" to "CHAPERONE_OUTPUTS__INFLUXDB__URI",
+)
+
+/**
+ * Loads the app config from the given TOML file.
+ * Any value can be overridden with a CHAPERONE_-prefixed environment variable, where a double
+ * underscore separates path segments and a single underscore separates words within a camelCase field.
+ * e.g. CHAPERONE_OUTPUTS__INFLUXDB__DB overrides outputs.influxdb.db,
+ * and CHAPERONE_API_SERVER_PORT overrides apiServerPort.
+ */
+fun loadConfig(configFile: File, env: Map<String, String> = System.getenv()): AppConfig {
     check(configFile.exists()) { "Error: configured configFile wasn't found. [${configFile.path}]" }
 
-    val appConfig = Config()
-        .from.toml.file(configFile)
-        .toValue<AppConfig>()
-
-    // todo figure out how to merge `.from.env` into this properly.
-    // to fix ^, we need to not use camelCase naming or use the Config object. see https://github.com/uchuhimo/konf/issues/51
-    val env = System.getenv()
-    appConfig.outputs.influxdb?.let { influxDbOutputConfig ->
-        env["CHAPERONE_OUTPUTS_INFLUXDB_DB"]?.let { influxDbOutputConfig.db = it }
-        env["CHAPERONE_OUTPUTS_INFLUXDB_URI"]?.let { influxDbOutputConfig.uri = it }
-    }
-
-    return appConfig
+    return ConfigLoaderBuilder.default()
+        .addPropertySource(
+            EnvironmentVariablesPropertySource(
+                useUnderscoresAsSeparator = true,
+                allowUppercaseNames = true,
+                environmentVariableMap = {
+                    env.filterKeys { it.startsWith(ENV_PREFIX) }
+                        .mapKeys { legacyEnvAliases[it.key] ?: it.key }
+                },
+                prefix = ENV_PREFIX
+            )
+        )
+        .addFileSource(configFile)
+        .build()
+        .loadConfigOrThrow<AppConfig>()
 }
