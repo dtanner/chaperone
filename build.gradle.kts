@@ -34,7 +34,9 @@ dependencies {
     implementation("com.github.ajalt.clikt:clikt:4.2.2")
 
     // config
-    implementation("com.uchuhimo:konf-toml:1.1.2")
+    val hopliteVersion = "2.7.5" // 2.8+ requires Kotlin 1.9+
+    implementation("com.sksamuel.hoplite:hoplite-core:$hopliteVersion")
+    implementation("com.sksamuel.hoplite:hoplite-toml:$hopliteVersion")
 
     // cron scheduling
     implementation("com.cronutils:cron-utils:9.2.1")
