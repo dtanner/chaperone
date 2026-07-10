@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.8.10"
+    alias(libs.plugins.kotlin.jvm)
     application
 }
 
@@ -9,7 +9,7 @@ repositories {
 }
 
 tasks {
-    java { toolchain { languageVersion.set(JavaLanguageVersion.of(17)) } }
+    java { toolchain { languageVersion.set(JavaLanguageVersion.of(25)) } }
 
     withType<Test> {
         useJUnitPlatform()
@@ -21,43 +21,34 @@ application {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.8.0")
+    implementation(libs.kotlinx.coroutines.reactive)
 
-    implementation("ch.qos.logback:logback-classic:1.4.14")
-    implementation("net.logstash.logback:logstash-logback-encoder:7.4") {
+    implementation(libs.logback.classic)
+    implementation(libs.logstash.logback.encoder) {
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
-    implementation("org.slf4j:slf4j-api:2.0.9")
+    implementation(libs.kotlin.logging)
+    implementation(libs.slf4j.api)
 
     // cli parsing
-    implementation("com.github.ajalt.clikt:clikt:4.2.2")
+    implementation(libs.clikt)
 
     // config
-    val hopliteVersion = "2.7.5" // 2.8+ requires Kotlin 1.9+
-    implementation("com.sksamuel.hoplite:hoplite-core:$hopliteVersion")
-    implementation("com.sksamuel.hoplite:hoplite-toml:$hopliteVersion")
+    implementation(libs.bundles.hoplite)
 
     // cron scheduling
-    implementation("com.cronutils:cron-utils:9.2.1")
+    implementation(libs.cron.utils)
 
     // api
-    val http4kVersion = "5.14.0.0"
-    implementation("org.http4k:http4k-core:$http4kVersion")
-    implementation("org.http4k:http4k-server-undertow:$http4kVersion")
-    implementation("org.http4k:http4k-client-okhttp:$http4kVersion")
+    implementation(libs.bundles.http4k)
 
     // command execution management
-    implementation("org.zeroturnaround:zt-exec:1.12")
+    implementation(libs.zt.exec)
 
-    val jacksonVersion = "2.16.2"
-    api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    api("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
-    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
-    api("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion")
+    api(libs.bundles.jackson)
 
     testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
-    testImplementation("io.kotest:kotest-assertions-core:5.8.1")
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.kotest.assertions.core)
 }
